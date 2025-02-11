@@ -3,8 +3,9 @@ const tailwindColors = require('tailwindcss/colors')
 const colors = {
 	...tailwindColors,
 	mainColor: '#209bdb',
-	secondaryColor: '#333546',
-	backgroundColor: '#1e202c',
+	secondaryColor: '#333546', 
+	backgroundColor: '#1e202c', 
+	accentColor: '#F59E0B', 
 }
 
 module.exports = {

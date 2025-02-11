@@ -23,7 +23,7 @@ const Header = () => {
 	return (
 		<header
 			className={`fixed top-0 left-0 w-full h-24 z-50 transition-all duration-300 bg-backgroundColor bg-opacity-40 ${
-				isScrolled ? 'bg-opacity-95 blur-sm' : ''
+				isScrolled ? 'bg-opacity-80' : ''
 			}`}>
 			<div className='flex items-center justify-between px-6 py-3'>
 				{/* Logo i nazwa */}
