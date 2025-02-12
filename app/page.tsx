@@ -2,6 +2,7 @@ import AboutUs from '@/components/Home/AboutUsSection'
 import Header from '@/components/Home/Header'
 import HeroSection from '@/components/Home/HeroSection'
 import TodayWeatherCard from '@/components/Home/TodayWeatherCard'
+import JoinToUsSection from '@/components/Home/JoinToUsSection'
 
 export default function Home() {
 	return (
@@ -10,6 +11,7 @@ export default function Home() {
 			<HeroSection/>
       <AboutUs/>
       <TodayWeatherCard/>
+      <JoinToUsSection/>
 		</section>
 	)
 }

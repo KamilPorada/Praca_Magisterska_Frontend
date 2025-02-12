@@ -1,5 +1,5 @@
 import Image from "next/image";
-import AboutusImg from "../../public/img/aboutus-img2.jpg";
+import AboutusImg from "../../public/img/aboutus-img.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCloud, faChartLine } from "@fortawesome/free-solid-svg-icons";
 import SectionTitle from "../UI/SectionTitle";

@@ -36,8 +36,7 @@ html {
 .btn {
   position: relative;
   font-size: 0.75rem; 
-  padding: 0.4rem 1rem; /* Mniejsze paddingi */
-  margin: 0 0.5rem; /* Mniejszy margines */
+  padding: 0.4rem 1rem;
   font-weight: 600; 
   text-transform: uppercase;
   background-color: #209bdb;

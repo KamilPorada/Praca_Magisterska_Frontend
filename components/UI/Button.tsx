@@ -4,11 +4,11 @@ const Button: React.FC<{
 	disabled?: boolean;
 	children: React.ReactNode;
   }> = props => {
-	const buttonClassName = `btn ${
+	const buttonClassName = `${
 	  props.disabled
 		? 'bg-gray-500 cursor-not-allowed'
 		: ''
-	} ${props.className}`;
+	} ${props.className} btn`;
   
 	return (
 	  <button className={buttonClassName} onClick={props.onClick} disabled={props.disabled}>
