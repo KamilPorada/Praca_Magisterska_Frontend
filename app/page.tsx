@@ -5,6 +5,7 @@ import TodayWeatherCard from '@/components/Home/TodayWeatherCard'
 import JoinToUsSection from '@/components/Home/JoinToUsSection'
 import OurAchievements from '@/components/Home/OurAchievements'
 import SpecialistsSection from '@/components/Home/SpecialistsSection'
+import BannerSection from '@/components/Home/BannerSection'
 
 export default function Home() {
 	return (
@@ -15,6 +16,7 @@ export default function Home() {
       <TodayWeatherCard/>
       <JoinToUsSection/>
       <OurAchievements/>
+      <BannerSection/>
       <SpecialistsSection/>
 		</section>
 	)
