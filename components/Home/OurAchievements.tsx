@@ -29,9 +29,9 @@ import {
   ];
 const OurAchievements = () => {
   return (
-    <section className="container py-8 md:py-20">
+    <section className="container pt-8 md:pt-20">
       <SectionTitle title='Nasze osiągnięcia'/>
-      <div className="flex flex-wrap justify-center gap-8 py-8 md:py-20">
+      <div className="flex flex-wrap justify-center gap-8 pt-8 md:pt-20">
         {achievements.map((item, index) => (
           <Achievement key={index} icon={item.icon} title={item.title} description={item.description} />
         ))}

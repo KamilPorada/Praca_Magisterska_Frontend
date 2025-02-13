@@ -53,7 +53,7 @@ export default function TodayWeatherCard() {
 		city: 'Warszawa',
 		temperature_2m: 17,
 		relative_humidity_2m: 52,
-		is_day: false, // Zmień na false, aby zobaczyć wersję nocną
+		is_day: true, // Zmień na false, aby zobaczyć wersję nocną
 		weather_code: 0,
 		surface_pressure: 1012,
 		wind_speed_10m: 14,
@@ -61,11 +61,11 @@ export default function TodayWeatherCard() {
 		sunset: '17:45',
 	}
 
-	const [currentTime, setCurrentTime] = useState('21:00') // Sztucznie ustawiona godzina
+	const [currentTime, setCurrentTime] = useState('12:00') // Sztucznie ustawiona godzina
 
 	useEffect(() => {
 		const interval = setInterval(() => {
-			setCurrentTime('21:00')
+			setCurrentTime('12:00')
 		}, 60000)
 		return () => clearInterval(interval)
 	}, [])
@@ -118,7 +118,7 @@ export default function TodayWeatherCard() {
 			<SectionTitle title={'Aktualna prognoza'} />
 			<div className='flex flex-col items-center mt-16'>
 				<div
-					className={`rounded-xl p-5 text-center shadow-lg transition-all duration-500 ${
+					className={`rounded-xl p-5 text-center shadow-lg transition-all duration-500 bg-opacity ${
 						weatherData.is_day
 							? 'bg-gradient-to-b from-blue-200 to-blue-400 text-gray-900'
 							: 'bg-gradient-to-b from-gray-900 to-black text-white'
