@@ -6,7 +6,7 @@ import SectionTitle from "../UI/SectionTitle";
 
 export default function AboutPlatform() {
   return (
-    <section className="bg-secondaryColor py-16 px-6">
+    <section className="bg-secondaryColor py-16 px-6" id="aboutus">
       <div className="container mx-auto">
         {/* Tytuł sekcji */}
         <SectionTitle title="Kilka słów o nas" />

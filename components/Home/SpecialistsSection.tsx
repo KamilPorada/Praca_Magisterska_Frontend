@@ -70,7 +70,7 @@ const specialists = [
 
 const SpecialistsSection = () => {
 	return (
-		<section className='bg-backgroundColor text-white container pt-8 md:pt-20'>
+		<section className='bg-backgroundColor text-white container pt-8 md:pt-20' id='specialists'>
 			<SectionTitle title='Użytkownicy platformy' />
 			<div className='pt-8 md:pt-20'>
 				<Swiper

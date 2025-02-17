@@ -29,7 +29,7 @@ import {
   ];
 const OurAchievements = () => {
   return (
-    <section className="container pt-8 md:pt-20">
+    <section className="container pt-8 md:pt-20" id='achievements'>
       <SectionTitle title='Nasze osiągnięcia'/>
       <div className="flex flex-wrap justify-center gap-8 pt-8 md:pt-20">
         {achievements.map((item, index) => (

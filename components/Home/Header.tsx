@@ -38,10 +38,10 @@ const Header = () => {
 				{/* Menu desktopowe */}
 				<nav className='hidden lg:flex space-x-6 font-medium'>
 					{[
-						{ label: 'O nas', href: '#about' },
+						{ label: 'O nas', href: '#aboutus' },
 						{ label: 'Aktualna prognoza', href: '#forecast' },
-						{ label: 'Historia pogody', href: '#history' },
-						{ label: 'Wykresy', href: '#charts' },
+						{ label: 'Osiągnięcia', href: '#achievements' },
+						{ label: 'Użytkownicy', href: '#specialists' },
 					].map((item, index) => (
 						<a
 							key={index}

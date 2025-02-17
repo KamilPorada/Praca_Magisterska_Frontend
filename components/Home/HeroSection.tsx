@@ -4,6 +4,8 @@ import heroImg from '../../public/img/hero-img.jpg'
 import Button from '../UI/Button'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
+import Link from 'next/link'
+
 
 const HeroSection = () => {
 	// Konfiguracja animacji dla wszystkich elementów
@@ -43,9 +45,12 @@ const HeroSection = () => {
 					{...fadeInFromLeft}
 					transition={{ ...fadeInFromLeft.transition, delay: 0.6 }} // Kolejne opóźnienie dla efektu sekwencyjnego
 					className='absolute top-[60%] left-[12%] md:left-[10%]'>
-					<Button>
-						Odkryj więcej <FontAwesomeIcon icon={faChevronDown} className='ml-2 text-basic md:text-lg animate-bounce' />
-					</Button>{' '}
+					<Button >
+						<Link href='#aboutus'>
+							Odkryj więcej{' '}
+							<FontAwesomeIcon icon={faChevronDown} className='ml-2 text-basic md:text-lg animate-bounce' />
+						</Link>
+					</Button>
 				</motion.div>
 			</div>
 		</div>

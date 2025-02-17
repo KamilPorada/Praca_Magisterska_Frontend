@@ -6,6 +6,7 @@ import JoinToUsSection from '@/components/Home/JoinToUsSection'
 import OurAchievements from '@/components/Home/OurAchievements'
 import SpecialistsSection from '@/components/Home/SpecialistsSection'
 import BannerSection from '@/components/Home/BannerSection'
+import Footer from '@/components/Home/Footer'
 
 export default function Home() {
 	return (
@@ -18,6 +19,7 @@ export default function Home() {
       <OurAchievements/>
       <BannerSection/>
       <SpecialistsSection/>
+      <Footer/>
 		</section>
 	)
 }
