@@ -64,13 +64,13 @@ interface WeatherProps {
 }
 
 export default function TodayWeatherCard({ weather }: { weather: WeatherProps }) {
-	const [currentTime, setCurrentTime] = useState('12:00') // Sztucznie ustawiona godzina
+	const [currentTime, setCurrentTime] = useState('12:00') 
 
 	useEffect(() => {
 		const updateTime = () => {
 			const now = new Date()
 			const year = now.getFullYear()
-			const month = (now.getMonth() + 1).toString().padStart(2, '0') // Miesiące są liczone od 0
+			const month = (now.getMonth() + 1).toString().padStart(2, '0') 
 			const day = now.getDate().toString().padStart(2, '0')
 			const hours = now.getHours().toString().padStart(2, '0')
 			const minutes = now.getMinutes().toString().padStart(2, '0')
@@ -78,16 +78,16 @@ export default function TodayWeatherCard({ weather }: { weather: WeatherProps })
 			setCurrentTime(`${year}-${month}-${day}T${hours}:${minutes}`)
 		}
 
-		updateTime() // Ustawienie początkowej wartości
-		const interval = setInterval(updateTime, 60000) // Aktualizacja co minutę
+		updateTime() 
+		const interval = setInterval(updateTime, 60000) 
 
 		return () => clearInterval(interval)
 	}, [])
 
 	const parseTime = (timeStr?: string): number => {
-		if (!timeStr) return 0 // Jeśli `timeStr` jest undefined lub pusty, zwracamy 0
-		const match = timeStr.match(/T(\d{2}):(\d{2})/) // Wyszukujemy HH:MM po literze 'T'
-		if (!match) return 0 // Jeśli nie udało się dopasować, zwracamy 0
+		if (!timeStr) return 0 
+		const match = timeStr.match(/T(\d{2}):(\d{2})/) 
+		if (!match) return 0 
 		const hours = parseInt(match[1], 10)
 		const minutes = parseInt(match[2], 10)
 		return hours * 60 + minutes
@@ -103,7 +103,6 @@ export default function TodayWeatherCard({ weather }: { weather: WeatherProps })
 	console.log(weather.city, weather.is_day)
 
 	if (weather.is_day) {
-		// Słońce w ciągu dnia (od wschodu do zachodu)
 		progress = Math.min(
 			Math.max(((currentMinutes - sunrise1Minutes) / (sunsetMinutes - sunrise1Minutes)) * 100, 0),
 			100
@@ -116,23 +115,17 @@ export default function TodayWeatherCard({ weather }: { weather: WeatherProps })
 			timeRemainingText = `Do zachodu słońca pozostało: ${Math.floor(minutesLeft / 60)}h ${minutesLeft % 60}min`
 		}
 	} else {
-		// Noc – od zachodu do następnego wschodu
-		let totalNightDuration = 1440 - sunsetMinutes + sunrise2Minutes // Całkowity czas nocy (minuty)
+		let totalNightDuration = 1440 - sunsetMinutes + sunrise2Minutes 
 		let minutesSinceSunset =
 			currentMinutes > sunsetMinutes
-				? currentMinutes - sunsetMinutes // Po zachodzie, tej samej nocy
-				: 1440 - sunsetMinutes + currentMinutes // Po północy, do wschodu
+				? currentMinutes - sunsetMinutes
+				: 1440 - sunsetMinutes + currentMinutes
 
-		progress = Math.min(
-			Math.max(((currentMinutes - sunrise1Minutes) / (sunsetMinutes - sunrise1Minutes)) * 100, 0),
-			100
-		)
-		angle = 180 - (progress / 100) * 180
-		const minutesLeft =
-			currentMinutes > sunsetMinutes
-				? sunrise2Minutes + (1440 - currentMinutes) // Po zachodzie do rana
-				: sunrise2Minutes - currentMinutes // Przed wschodem, tej samej nocy
+		progress = Math.min(Math.max((minutesSinceSunset / totalNightDuration) * 100, 0), 100)
 
+		angle = (progress / 100) * 180
+
+		const minutesLeft = sunrise2Minutes - currentMinutes + (currentMinutes > sunsetMinutes ? 1440 : 0)
 		if (minutesLeft > 0) {
 			timeRemainingText = `Do wschodu słońca pozostało: ${Math.floor(minutesLeft / 60)}h ${minutesLeft % 60}min`
 		}

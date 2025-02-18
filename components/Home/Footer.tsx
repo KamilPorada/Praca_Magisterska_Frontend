@@ -4,7 +4,7 @@ import logo from '../../public/icon/logo.svg'
 
 const Footer = () => {
 	return (
-		<footer className='bg-black text-gray-300 py-8 px-6 mt-16'>
+		<footer className='bg-black text-gray-300 pt-8 pb-4 px-6 mt-16'>
 			<div className='max-w-6xl mx-auto flex flex-col lg:flex-row lg:justify-between gap-8 text-center lg:text-left'>
 				{/* Logo & motto */}
 				<div className='flex flex-col items-center lg:items-start space-y-3'>

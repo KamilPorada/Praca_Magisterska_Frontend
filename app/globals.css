@@ -35,6 +35,10 @@ html {
 	font-family: var(--font-tertiary);
 }
 
+.secondary-font{
+	font-family: var(--font-secondary);
+}
+
 .slick-dots li button:before {
     color: white !important; /* Domyślny kolor kropek */
     opacity: 1 !important;

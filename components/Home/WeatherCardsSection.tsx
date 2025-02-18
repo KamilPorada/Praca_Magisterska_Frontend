@@ -126,7 +126,6 @@ export default function WeatherCardsSection() {
 					</Slider>
 				</div>
 			)}
-			{/* Sprawdź, jak zmieniała się pogoda w Twoim mieście – dołącz do nas! */}
 			<p className='text-center mt-20 text-xs md:text-sm lg:text-base font-thin px-4'>
 				Ciekawi Cię, jak zmieniała się pogoda w Twoim mieście na przestrzeni lat?
 				<br />

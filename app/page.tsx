@@ -8,10 +8,14 @@ import SpecialistsSection from '@/components/Home/SpecialistsSection'
 import BannerSection from '@/components/Home/BannerSection'
 import Footer from '@/components/Home/Footer'
 
+import Sidebar from '@/components/Navigation/Sidebar'
+
+
 export default function Home() {
 	return (
 		<section className='flex flex-col flex-wrap justify-center'>
-			<Header />
+      <Sidebar/>
+			{/* <Header />
 			<HeroSection/>
       <AboutUs/>
       <WeatherCardsSection/>
@@ -19,7 +23,7 @@ export default function Home() {
       <OurAchievements/>
       <BannerSection/>
       <SpecialistsSection/>
-      <Footer/>
+      <Footer/> */}
 		</section>
 	)
 }
