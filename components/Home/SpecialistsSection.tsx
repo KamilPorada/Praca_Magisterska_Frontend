@@ -1,10 +1,8 @@
 'use client'
 import React from 'react'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import 'swiper/css'
-import 'swiper/css/pagination'
-import 'swiper/css/autoplay'
-import { Pagination, Autoplay } from 'swiper/modules'
+import Slider from 'react-slick'
+import 'slick-carousel/slick/slick.css'
+import 'slick-carousel/slick/slick-theme.css'
 import SpecialistItem from './SpecialistItem'
 import SectionTitle from '../UI/SectionTitle'
 
@@ -68,29 +66,45 @@ const specialists = [
 	},
 ]
 
+const settings = {
+	dots: true, 
+	infinite: true, 
+	speed: 1000, 
+	slidesToShow: 3, 
+	slidesToScroll: 1, 
+	autoplay: true, 
+	autoplaySpeed: 3000, 
+	arrows: true, 
+	responsive: [
+		{
+			breakpoint: 1024,
+			settings: {
+				slidesToShow: 2,
+				slidesToScroll: 1,
+			},
+		},
+		{
+			breakpoint: 768,
+			settings: {
+				slidesToShow: 1,
+				slidesToScroll: 1,
+			},
+		},
+	],
+}
+
 const SpecialistsSection = () => {
 	return (
 		<section className='bg-backgroundColor text-white container pt-8 md:pt-20' id='specialists'>
 			<SectionTitle title='Użytkownicy platformy' />
-			<div className='pt-8 md:pt-20'>
-				<Swiper
-					modules={[Pagination, Autoplay]}
-					pagination={{ clickable: true }}
-					loop={true} // Zapętlenie karuzeli
-					autoplay={{ delay: 3000, disableOnInteraction: false }} // Automatyczne przewijanie co 3 sekundy
-					spaceBetween={20}
-					slidesPerView={1}
-					breakpoints={{
-						640: { slidesPerView: 2 },
-						1024: { slidesPerView: 3 },
-					}}
-					className='max-w-6xl mx-auto'>
+			<div className='pt-8 md:pt-20 max-w-6xl mx-auto'>
+				<Slider {...settings}>
 					{specialists.map((spec, index) => (
-						<SwiperSlide key={index}>
+						<div key={index} className='px-4'>
 							<SpecialistItem {...spec} />
-						</SwiperSlide>
+						</div>
 					))}
-				</Swiper>
+				</Slider>
 			</div>
 		</section>
 	)

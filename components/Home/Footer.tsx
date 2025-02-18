@@ -20,7 +20,7 @@ const Footer = () => {
 					<h3 className='text-lg font-semibold text-white mb-2'>Nawigacja</h3>
 					<ul className='space-y-2 font-thin'>
 						<li><a href='#aboutus' className='hover:text-mainColor transition'>O nas</a></li>
-						<li><a href='#' className='hover:text-mainColor transition'>Aktualna prognoza</a></li>
+						<li><a href='#weathercards' className='hover:text-mainColor transition'>Aktualna prognoza</a></li>
 						<li><a href='#achievements' className='hover:text-mainColor transition'>Osiągnięcia</a></li>
 						<li><a href='#specialists' className='hover:text-mainColor transition'>Użytkownicy</a></li>
 					</ul>

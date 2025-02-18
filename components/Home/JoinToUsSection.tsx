@@ -4,7 +4,7 @@ import Button from '../UI/Button'
 
 const JoinToUsSection = () => {
 	return (
-		<section className='w-full bg-gray-900 text-white md:py-16  flex flex-col items-center '>
+		<section className='w-full bg-gray-900 text-white md:py-16 py-8  flex flex-col items-center' id='jointous'>
 			<div className='max-w-5xl text-center px-6'>
 				<h2 className='text-3xl md:text-4xl font-bold'>DOŁĄCZ DO NASZEJ SPOŁECZNOŚCI!</h2>
 				<p className='text-base md:text-lg text-gray-300 mt-4'>

@@ -35,6 +35,17 @@ html {
 	font-family: var(--font-tertiary);
 }
 
+.slick-dots li button:before {
+    color: white !important; /* Domyślny kolor kropek */
+    opacity: 1 !important;
+}
+
+.slick-dots li.slick-active button:before {
+    color: #209bdb !important; /* Kolor aktywnej kropki */
+}
+
+
+
 .btn {
 	position: relative;
 	font-size: 0.75rem;
