@@ -4,29 +4,30 @@ import Image from 'next/image'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { motion, AnimatePresence } from 'framer-motion'
+import { signIn, signOut, useSession } from 'next-auth/react' // <-- Dodane next-auth
 import logo from '../../public/icon/logo.svg'
 import Button from '../UI/Button'
 
 const Header = () => {
-	const [isMenuOpen, setIsMenuOpen] = useState(false)
-	const [isScrolled, setIsScrolled] = useState(false)
+	const { data: session } = useSession(); // Pobieranie sesji użytkownika
+	const [isMenuOpen, setIsMenuOpen] = useState(false);
+	const [isScrolled, setIsScrolled] = useState(false);
 
 	useEffect(() => {
 		const handleScroll = () => {
-			setIsScrolled(window.scrollY > 50) // Jeśli przewinięto więcej niż 50px, zmień stan
-		}
+			setIsScrolled(window.scrollY > 50);
+		};
 
-		window.addEventListener('scroll', handleScroll)
-		return () => window.removeEventListener('scroll', handleScroll)
-	}, [])
+		window.addEventListener('scroll', handleScroll);
+		return () => window.removeEventListener('scroll', handleScroll);
+	}, []);
 
 	return (
 		<header
-			className={`fixed top-0 left-0 w-full h-24 z-50 transition-all duration-300 bg-backgroundColor bg-opacity-40 ${
+			className={`fixed top-0 left-0 w-full h-24 z-50 transition-all duration-300 bg-backgroundColor bg-opacity-90 ${
 				isScrolled ? 'bg-opacity-80' : ''
 			}`}>
 			<div className='flex items-center justify-between px-6 py-3'>
-				{/* Logo i nazwa */}
 				<div className='flex items-center space-x-3'>
 					<Image src={logo} alt='RetroSynoptiQ Logo' width={60} />
 					<div>
@@ -54,7 +55,11 @@ const Header = () => {
 
 				{/* Przycisk logowania */}
 				<div className='hidden lg:block'>
-					<Button className='text-black'>Zaloguj się</Button>
+					{session ? (
+						<Button className='text-black' onClick={() => signOut()}>Wyloguj się</Button>
+					) : (
+						<Button className='text-black' onClick={() => signIn('google')}>Zaloguj się</Button>
+					)}
 				</div>
 
 				{/* Przycisk otwierający / zamykający menu mobilne */}
@@ -71,7 +76,6 @@ const Header = () => {
 							exit={{ x: '100%' }}
 							transition={{ type: 'spring', stiffness: 300, damping: 30 }}
 							className='fixed top-0 right-0 w-64 h-full bg-backgroundColor shadow-lg p-6 flex flex-col justify-between z-50 mt-24 pb-32'>
-							{/* Linki w menu */}
 							<nav className='flex flex-col items-start space-y-4 mt-4 font-medium'>
 								{[
 									{ label: 'O nas', href: '#about' },
@@ -88,7 +92,11 @@ const Header = () => {
 								))}
 							</nav>
 							<div className='w-full text-center mt-4'>
-								<Button className='w-full'>Zaloguj się</Button>
+								{session ? (
+									<Button className='w-full' onClick={() => signOut()}>Wyloguj się</Button>
+								) : (
+									<Button className='w-full' onClick={() => signIn('google')}>Zaloguj się</Button>
+								)}
 								<p className='text-xs text-white mt-4'>Wszelkie prawa zastrzeżone</p>
 								<p className='text-xs text-white'>© {new Date().getFullYear()}</p>
 							</div>

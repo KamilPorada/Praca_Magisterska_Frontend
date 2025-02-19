@@ -50,7 +50,7 @@ export default function WeatherCardsSection() {
 				const responses = await Promise.all(
 					cities.map(async city => {
 						const response = await fetch(
-							`http://localhost:8080/api/weather?latitude=${city.latitude}&longitude=${city.longitude}`
+							`http://localhost:8080/api/today-weather?latitude=${city.latitude}&longitude=${city.longitude}`
 						)
 						const data = await response.json()
 

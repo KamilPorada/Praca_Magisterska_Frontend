@@ -14,10 +14,15 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import Image from 'next/image'
 import logo from '../../public/icon/logo.svg'
+import { signOut, useSession } from 'next-auth/react' // Pobranie useSession
 
 const Sidebar = () => {
 	const [isCollapsed, setIsCollapsed] = useState(false)
 	const currentYear = new Date().getFullYear()
+
+	// Pobranie danych użytkownika
+	const { data: session } = useSession()
+	const user = session?.user
 
 	return (
 		<div
@@ -69,17 +74,21 @@ const Sidebar = () => {
 			{/* Sekcja użytkownika */}
 			<div className={`flex items-center justify-between mt-auto p-2 ${isCollapsed ? 'flex-col gap-3' : ''}`}>
 				<div className='flex flex-row items-center gap-2'>
-					<div className='w-10 h-10 bg-gray-600 rounded-full flex items-center justify-center'>
-						<FontAwesomeIcon icon={faUser} className='text-white' />
-					</div>
+					{user?.image ? (
+						<Image src={user.image} alt='Avatar' width={40} height={40} className='rounded-full' />
+					) : (
+						<div className='w-10 h-10 bg-gray-600 rounded-full flex items-center justify-center'>
+							<FontAwesomeIcon icon={faUser} className='text-white' />
+						</div>
+					)}
 					{!isCollapsed && (
 						<div>
-							<p className='text-sm font-semibold'>Jan Kowalski</p>
-							<p className='text-xs text-gray-400'>jan.kowalski@example.com</p>
+							<p className='text-sm font-semibold'>{user?.name || 'Nieznany użytkownik'}</p>
+							<p className='text-xs text-gray-400'>{user?.email || 'Brak e-maila'}</p>
 						</div>
 					)}
 				</div>
-				<button>
+				<button onClick={() => signOut()}>
 					<FontAwesomeIcon
 						icon={faSignOutAlt}
 						className='p-3 text-white rounded-lg hover:bg-mainColor transition-colors duration-400 cursor-pointer'
