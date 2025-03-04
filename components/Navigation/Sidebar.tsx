@@ -55,7 +55,7 @@ const Sidebar = () => {
 			<nav className='mt-5 px-2 font-thin'>
 				{[
 					{ label: 'Strona główna', icon: faHome, path: '/' },
-					{ label: 'Wyszukiwarka danych', icon: faSearch, path: '/wyszukiwarka' },
+					{ label: 'Wyszukiwarka danych', icon: faSearch, path: '/search-data' },
 					{ label: 'Mapa Polski', icon: faMapMarkedAlt, path: '/mapa' },
 					{ label: 'Analizy', icon: faChartBar, path: '/analizy' },
 					{ label: 'Raporty', icon: faFileAlt, path: '/raporty' },
