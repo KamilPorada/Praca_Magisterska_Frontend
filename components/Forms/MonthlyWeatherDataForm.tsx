@@ -1,6 +1,5 @@
 // components/MonthlyWeatherDataForm.tsx
-import { data } from 'framer-motion/client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 type City = {
   id: number;
@@ -13,7 +12,7 @@ type MonthlyWeatherDataFormProps = {
 };
 
 const MonthlyWeatherDataForm: React.FC<MonthlyWeatherDataFormProps> = ({ cities, onDataFetched }) => {
-  const [selectedCity, setSelectedCity] = useState<number | undefined>(undefined);
+  const [selectedCity, setSelectedCity] = useState<number | undefined>();
   const [startMonth, setStartMonth] = useState<number>(1);
   const [startYear, setStartYear] = useState<number>(1950); // Zmieniamy na 1950
   const [endMonth, setEndMonth] = useState<number>(12);
@@ -42,6 +41,12 @@ const MonthlyWeatherDataForm: React.FC<MonthlyWeatherDataFormProps> = ({ cities,
         console.error('Error fetching monthly weather data:', error);
       }
   };
+
+  useEffect(() => {
+    if (cities.length > 0) {
+      setSelectedCity(cities[0].id);
+    }
+  }, [cities]);
 
   return (
     <div className="max-w-md mx-auto p-4 border border-gray-300 rounded-lg shadow-md bg-white text-black">

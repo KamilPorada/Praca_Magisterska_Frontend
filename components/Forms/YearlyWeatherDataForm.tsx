@@ -1,5 +1,4 @@
-// components/YearlyWeatherDataForm.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 type City = {
   id: number;
@@ -13,10 +12,10 @@ type YearlyWeatherDataFormProps = {
 
 const YearlyWeatherDataForm: React.FC<YearlyWeatherDataFormProps> = ({ cities, onDataFetched }) => {
   const [selectedCity, setSelectedCity] = useState<number | undefined>(undefined);
-  const [startYear, setStartYear] = useState<number>(1950); // Rok początkowy
-  const [endYear, setEndYear] = useState<number>(2024); // Rok końcowy
+  const [startYear, setStartYear] = useState<number>(1950); 
+  const [endYear, setEndYear] = useState<number>(2024); 
 
-  const years = Array.from({ length: 2024 - 1950 + 1 }, (_, i) => 1950 + i); // Generowanie lat od 1950 do 2024
+  const years = Array.from({ length: 2024 - 1950 + 1 }, (_, i) => 1950 + i); 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,11 +33,17 @@ const YearlyWeatherDataForm: React.FC<YearlyWeatherDataFormProps> = ({ cities, o
           throw new Error('Failed to fetch data');
         }
         const data = await response.json();
-        onDataFetched(data);  // Przekaż pobrane dane do komponentu nadrzędnego
+        onDataFetched(data);
       } catch (error) {
         console.error('Error fetching yearly weather data:', error);
       }
   };
+
+  useEffect(() => {
+    if (cities.length > 0) {
+      setSelectedCity(cities[0].id);
+    }
+  }, [cities]);
 
   return (
     <div className="max-w-md mx-auto p-4 border border-gray-300 rounded-lg shadow-md bg-white text-black">

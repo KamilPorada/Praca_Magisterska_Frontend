@@ -33,8 +33,8 @@ type DailyWeatherData = {
 	maxWindSpeed: number
 	windGusts: number
 	dominantWindDirection: number
-    totalSolarRadiation: number
-    evapotranspiration: number
+	totalSolarRadiation: number
+	evapotranspiration: number
 }
 
 type MonthlyWeatherData = {
@@ -55,6 +55,8 @@ type MonthlyWeatherData = {
 	precipitationTime: number
 	totalSolarRadiation: number
 	evapotranspiration: number
+	weatherCode: number
+	dominantWindDirection: number
 }
 
 type YearlyWeatherData = {
@@ -76,25 +78,29 @@ type YearlyWeatherData = {
 const SearchData: React.FC = () => {
 	const [cities, setCities] = useState<City[]>([])
 	const [selectedOption, setSelectedOption] = useState<'days' | 'months' | 'years'>('days')
-
-	// Stan dla różnych typów danych pogodowych
 	const [dailyData, setDailyData] = useState<DailyWeatherData[]>([])
 	const [monthlyData, setMonthlyData] = useState<MonthlyWeatherData[]>([])
 	const [yearlyData, setYearlyData] = useState<YearlyWeatherData[]>([])
 
 	useEffect(() => {
-		const fetchCities = async () => {
-			try {
-				const response = await fetch('http://localhost:8080/api/cities')
-				const data = await response.json()
-				setCities(data)
-			} catch (error) {
-				console.error('Error fetching cities:', error)
-			}
-		}
-
-		fetchCities()
-	}, [])
+        const fetchCities = async () => {
+            try {
+                const response = await fetch('http://localhost:8080/api/cities')
+                const data = await response.json()
+    
+                const sortedData = data.sort((a: { name: string }, b: { name: string }) =>
+                    a.name.localeCompare(b.name)
+                )
+    
+                setCities(sortedData)
+            } catch (error) {
+                console.error('Error fetching cities:', error)
+            }
+        }
+    
+        fetchCities()
+    }, [])
+    
 
 	const handleOptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setSelectedOption(e.target.value as 'days' | 'months' | 'years')
@@ -108,7 +114,6 @@ const SearchData: React.FC = () => {
 		} else if (selectedOption === 'years') {
 			setYearlyData(data)
 		}
-		console.log(data)
 	}
 
 	const renderForm = () => {
@@ -132,7 +137,7 @@ const SearchData: React.FC = () => {
 		} else if (selectedOption === 'years' && yearlyData.length > 0) {
 			return <YearlyWeatherDataTable yearlyData={yearlyData} />
 		}
-		return null // Nie renderuj tabeli, jeśli nie ma danych
+		return null 
 	}
 
 	return (

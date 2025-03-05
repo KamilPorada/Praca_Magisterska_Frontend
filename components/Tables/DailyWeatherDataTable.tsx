@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 interface DailyWeatherData {
 	id: number
@@ -14,14 +14,14 @@ interface DailyWeatherData {
 	precipitationDuration: number
 	weatherCode: number
 	sunrise: string
-    sunset: string
+	sunset: string
 	sunlightDuration: number
-    daylightDuration: number
-    maxWindSpeed:number
+	daylightDuration: number
+	maxWindSpeed: number
 	windGusts: number
 	dominantWindDirection: number
-    totalSolarRadiation: number
-    evapotranspiration: number
+	totalSolarRadiation: number
+	evapotranspiration: number
 }
 
 interface DailyWeatherDataTableProps {
@@ -29,6 +29,19 @@ interface DailyWeatherDataTableProps {
 }
 
 const DailyWeatherDataTable: React.FC<DailyWeatherDataTableProps> = ({ dailyData }) => {
+	const [currentPage, setCurrentPage] = useState(1)
+	const itemsPerPage = 50
+
+	const totalPages = Math.ceil(dailyData.length / itemsPerPage)
+	const startIndex = (currentPage - 1) * itemsPerPage
+	const paginatedData = dailyData.slice(startIndex, startIndex + itemsPerPage)
+
+	const goToPage = (page: number) => {
+		if (page >= 1 && page <= totalPages) {
+			setCurrentPage(page)
+		}
+	}
+
 	return (
 		<div className='mt-6'>
 			<h2 className='text-xl font-semibold text-center mb-4'>Dane pogodowe dzienne</h2>
@@ -36,6 +49,7 @@ const DailyWeatherDataTable: React.FC<DailyWeatherDataTableProps> = ({ dailyData
 				<table className='min-w-full bg-white text-sm text-left text-gray-800'>
 					<thead className='bg-gray-100'>
 						<tr>
+							<th className='px-4 py-2 border-b'>L.P.</th>
 							<th className='px-4 py-2 border-b'>Data</th>
 							<th className='px-4 py-2 border-b'>Maksymalna temperatura (°C)</th>
 							<th className='px-4 py-2 border-b'>Minimalna temperatura (°C)</th>
@@ -47,10 +61,10 @@ const DailyWeatherDataTable: React.FC<DailyWeatherDataTableProps> = ({ dailyData
 							<th className='px-4 py-2 border-b'>Śnieg (mm)</th>
 							<th className='px-4 py-2 border-b'>Czas opadów (godz.)</th>
 							<th className='px-4 py-2 border-b'>Kod pogody</th>
-                            <th className='px-4 py-2 border-b'>Wschód słońca</th>
-                            <th className='px-4 py-2 border-b'>Zachód słońca</th>
+							<th className='px-4 py-2 border-b'>Wschód słońca</th>
+							<th className='px-4 py-2 border-b'>Zachód słońca</th>
 							<th className='px-4 py-2 border-b'>Czas nasłonecznienia (sekundy)</th>
-                            <th className='px-4 py-2 border-b'>Ilość światła dziennego (sekundy)</th>
+							<th className='px-4 py-2 border-b'>Ilość światła dziennego (sekundy)</th>
 							<th className='px-4 py-2 border-b'>Prędkość wiatru (km/h)</th>
 							<th className='px-4 py-2 border-b'>Porywy wiatru (km/h)</th>
 							<th className='px-4 py-2 border-b'>Dominujący kierunek wiatru (°)</th>
@@ -59,8 +73,9 @@ const DailyWeatherDataTable: React.FC<DailyWeatherDataTableProps> = ({ dailyData
 						</tr>
 					</thead>
 					<tbody>
-						{dailyData.map(data => (
+						{paginatedData.map((data, index) => (
 							<tr key={data.id} className='odd:bg-gray-50 even:bg-gray-100'>
+								<td className='px-4 py-2 border-b'>{startIndex + index + 1}</td>
 								<td className='px-4 py-2 border-b'>{data.date}</td>
 								<td className='px-4 py-2 border-b'>{data.maxTemperature}</td>
 								<td className='px-4 py-2 border-b'>{data.minTemperature}</td>
@@ -72,11 +87,11 @@ const DailyWeatherDataTable: React.FC<DailyWeatherDataTableProps> = ({ dailyData
 								<td className='px-4 py-2 border-b'>{data.snow}</td>
 								<td className='px-4 py-2 border-b'>{data.precipitationDuration}</td>
 								<td className='px-4 py-2 border-b'>{data.weatherCode}</td>
-                                <td className='px-4 py-2 border-b'>{data.sunrise}</td>
-                                <td className='px-4 py-2 border-b'>{data.sunset}</td>
+								<td className='px-4 py-2 border-b'>{data.sunrise}</td>
+								<td className='px-4 py-2 border-b'>{data.sunset}</td>
 								<td className='px-4 py-2 border-b'>{data.sunlightDuration}</td>
-                                <td className='px-4 py-2 border-b'>{data.daylightDuration}</td>
-                                <td className='px-4 py-2 border-b'>{data.maxWindSpeed}</td>
+								<td className='px-4 py-2 border-b'>{data.daylightDuration}</td>
+								<td className='px-4 py-2 border-b'>{data.maxWindSpeed}</td>
 								<td className='px-4 py-2 border-b'>{data.windGusts}</td>
 								<td className='px-4 py-2 border-b'>{data.dominantWindDirection}</td>
 								<td className='px-4 py-2 border-b'>{data.totalSolarRadiation}</td>
@@ -85,6 +100,23 @@ const DailyWeatherDataTable: React.FC<DailyWeatherDataTableProps> = ({ dailyData
 						))}
 					</tbody>
 				</table>
+			</div>
+			<div className='flex justify-center mt-4 space-x-2'>
+				<button
+					onClick={() => goToPage(currentPage - 1)}
+					disabled={currentPage === 1}
+					className={`px-4 py-2 rounded-lg ${currentPage === 1 ? 'bg-gray-300' : 'bg-blue-500 text-white'}`}
+				>
+					Poprzednia
+				</button>
+				<span className='px-4 py-2'>{`Strona ${currentPage} z ${totalPages}`}</span>
+				<button
+					onClick={() => goToPage(currentPage + 1)}
+					disabled={currentPage === totalPages}
+					className={`px-4 py-2 rounded-lg ${currentPage === totalPages ? 'bg-gray-300' : 'bg-blue-500 text-white'}`}
+				>
+					Następna
+				</button>
 			</div>
 		</div>
 	)
