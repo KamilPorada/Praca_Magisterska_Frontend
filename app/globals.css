@@ -31,6 +31,10 @@ html {
 	scroll-padding-top: 96px;
 }
 
+.sidebar-padding{
+	padding-left: 20rem;
+}
+
 .tertiary-font{
 	font-family: var(--font-tertiary);
 }

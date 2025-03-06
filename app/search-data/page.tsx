@@ -1,5 +1,8 @@
 'use client'
 import React, { useEffect, useState } from 'react'
+import { useSidebar } from '../../components/contexts/SidebarProvider'
+import SectionTitle from '@/components/UI/SectionTitle'
+
 import DailyWeatherDataForm from '../../components/Forms/DailyWeatherDataForm'
 import MonthlyWeatherDataForm from '../../components/Forms/MonthlyWeatherDataForm'
 import YearlyWeatherDataForm from '../../components/Forms/YearlyWeatherDataForm'
@@ -7,6 +10,9 @@ import YearlyWeatherDataForm from '../../components/Forms/YearlyWeatherDataForm'
 import DailyWeatherDataTable from '../../components/Tables/DailyWeatherDataTable'
 import MonthlyWeatherDataTable from '../../components/Tables/MonthlyWeatherDataTable'
 import YearlyWeatherDataTable from '../../components/Tables/YearlyWeatherDataTable'
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCalendarDay, faCalendarAlt, faCalendarCheck } from '@fortawesome/free-solid-svg-icons'
 
 type City = {
 	id: number
@@ -81,26 +87,24 @@ const SearchData: React.FC = () => {
 	const [dailyData, setDailyData] = useState<DailyWeatherData[]>([])
 	const [monthlyData, setMonthlyData] = useState<MonthlyWeatherData[]>([])
 	const [yearlyData, setYearlyData] = useState<YearlyWeatherData[]>([])
+	const { sidebarContainer } = useSidebar()
 
 	useEffect(() => {
-        const fetchCities = async () => {
-            try {
-                const response = await fetch('http://localhost:8080/api/cities')
-                const data = await response.json()
-    
-                const sortedData = data.sort((a: { name: string }, b: { name: string }) =>
-                    a.name.localeCompare(b.name)
-                )
-    
-                setCities(sortedData)
-            } catch (error) {
-                console.error('Error fetching cities:', error)
-            }
-        }
-    
-        fetchCities()
-    }, [])
-    
+		const fetchCities = async () => {
+			try {
+				const response = await fetch('http://localhost:8080/api/cities')
+				const data = await response.json()
+
+				const sortedData = data.sort((a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name))
+
+				setCities(sortedData)
+			} catch (error) {
+				console.error('Error fetching cities:', error)
+			}
+		}
+
+		fetchCities()
+	}, [])
 
 	const handleOptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setSelectedOption(e.target.value as 'days' | 'months' | 'years')
@@ -137,54 +141,58 @@ const SearchData: React.FC = () => {
 		} else if (selectedOption === 'years' && yearlyData.length > 0) {
 			return <YearlyWeatherDataTable yearlyData={yearlyData} />
 		}
-		return null 
+		return null
 	}
 
 	return (
-		<div className='max-w-4xl mx-auto p-4 border border-gray-300 rounded-lg shadow-md bg-white text-black'>
-			<h1 className='text-2xl font-bold text-center mb-6'>Wyszukiwanie danych pogodowych względem:</h1>
+		<section className={sidebarContainer}>
+			<div className='px-6'>
+				<SectionTitle title='Wyszukiwarka danych pogodowych'/>
 
-			<div className='mb-6'>
-				<label className='block text-gray-700 font-semibold mb-2'>Wybierz zakres danych</label>
-				<div className='flex gap-6'>
-					<label>
-						<input
-							type='radio'
-							value='days'
-							checked={selectedOption === 'days'}
-							onChange={handleOptionChange}
-							className='mr-2'
-						/>
-						Dni
-					</label>
-					<label>
-						<input
-							type='radio'
-							value='months'
-							checked={selectedOption === 'months'}
-							onChange={handleOptionChange}
-							className='mr-2'
-						/>
-						Miesiące
-					</label>
-					<label>
-						<input
-							type='radio'
-							value='years'
-							checked={selectedOption === 'years'}
-							onChange={handleOptionChange}
-							className='mr-2'
-						/>
-						Lata
-					</label>
+				<div className='mb-6'>
+					<label className='block text-gray-700 font-semibold mb-2'>Wybierz zakres danych</label>
+					<div className='flex gap-6'>
+						{/* Dni */}
+						<label 
+							className={`cursor-pointer flex flex-col items-center p-4 border-2 rounded-lg transition-all duration-300 ease-in-out ${
+								selectedOption === 'days' ? 'bg-blue-500 border-blue-500 text-white' : 'bg-white border-gray-300 text-gray-700'
+							} hover:bg-blue-100 hover:border-blue-400`}
+							onClick={() => handleOptionChange({ target: { value: 'days' } } as React.ChangeEvent<HTMLInputElement>)}
+						>
+							<FontAwesomeIcon icon={faCalendarDay} className='text-3xl mb-2' />
+							Dni
+						</label>
+
+						{/* Miesiące */}
+						<label 
+							className={`cursor-pointer flex flex-col items-center p-4 border-2 rounded-lg transition-all duration-300 ease-in-out ${
+								selectedOption === 'months' ? 'bg-blue-500 border-blue-500 text-white' : 'bg-white border-gray-300 text-gray-700'
+							} hover:bg-blue-100 hover:border-blue-400`}
+							onClick={() => handleOptionChange({ target: { value: 'months' } } as React.ChangeEvent<HTMLInputElement>)}
+						>
+							<FontAwesomeIcon icon={faCalendarAlt} className='text-3xl mb-2' />
+							Miesiące
+						</label>
+
+						{/* Lata */}
+						<label 
+							className={`cursor-pointer flex flex-col items-center p-4 border-2 rounded-lg transition-all duration-300 ease-in-out ${
+								selectedOption === 'years' ? 'bg-blue-500 border-blue-500 text-white' : 'bg-white border-gray-300 text-gray-700'
+							} hover:bg-blue-100 hover:border-blue-400`}
+							onClick={() => handleOptionChange({ target: { value: 'years' } } as React.ChangeEvent<HTMLInputElement>)}
+						>
+							<FontAwesomeIcon icon={faCalendarCheck} className='text-3xl mb-2' />
+							Lata
+						</label>
+					</div>
 				</div>
+
+				{renderForm()}
+
+				{/* Renderowanie tabeli tylko po załadowaniu danych */}
+				{renderTable()}
 			</div>
-
-			{renderForm()}
-
-			{/* Renderowanie tabeli tylko po załadowaniu danych */}
-			{renderTable()}
-		</div>
+		</section>
 	)
 }
 

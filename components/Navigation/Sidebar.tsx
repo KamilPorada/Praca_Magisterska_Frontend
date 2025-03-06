@@ -1,6 +1,7 @@
 // components/Sidebar.tsx
 'use client'
 import { useState } from 'react'
+import { useSidebar } from '../../components/contexts/SidebarProvider'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
 	faHome,
@@ -19,8 +20,9 @@ import logo from '../../public/icon/logo.svg'
 import { signOut, useSession } from 'next-auth/react'
 
 const Sidebar = () => {
-	const [isCollapsed, setIsCollapsed] = useState(false)
 	const currentYear = new Date().getFullYear()
+	const { isCollapsed, toggleSidebar } = useSidebar();
+
 
 	const { data: session } = useSession()
 	const user = session?.user
@@ -53,7 +55,7 @@ const Sidebar = () => {
 					</div>
 				)}
 				{isCollapsed && <Image src={logo} alt='RetroSynoptiQ Logo' width={50} />}
-				<button onClick={() => setIsCollapsed(!isCollapsed)}>
+				<button onClick={() => toggleSidebar()}>
 					<FontAwesomeIcon
 						icon={isCollapsed ? faArrowRight : faArrowLeft}
 						className='p-3 text-white rounded-lg hover:bg-mainColor transition-colors duration-400 cursor-pointer'

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
-import MainNavigation from '../components/Navigation/MainNavigation'
+import Head from 'next/head'
 import Provider from '@/components/Provider'
+import { SidebarProvider } from '../components/contexts/SidebarProvider'
 import Sidebar from '@/components/Navigation/Sidebar'
 import './globals.css'
 
@@ -12,11 +13,17 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
 	return (
 		<html lang='en'>
+			<Head>
+				<title>Your Title</title>
+				{/* Możesz dodać inne metadane */}
+			</Head>
 			<body>
-				<Provider>
-					<Sidebar />
-					{children}
-				</Provider>
+				<SidebarProvider>
+					<Provider>
+						{children}
+						<Sidebar />
+					</Provider>
+				</SidebarProvider>
 			</body>
 		</html>
 	)
