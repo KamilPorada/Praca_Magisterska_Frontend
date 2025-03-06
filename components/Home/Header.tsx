@@ -22,6 +22,10 @@ const Header = () => {
 		return () => window.removeEventListener('scroll', handleScroll);
 	}, []);
 
+	const handleSignIn = async () => {
+		signIn('google', { callbackUrl: '/dashboard' })
+	  }
+
 	return (
 		<header
 			className={`fixed top-0 left-0 w-full h-24 z-50 transition-all duration-300 bg-backgroundColor bg-opacity-90 ${
@@ -58,7 +62,7 @@ const Header = () => {
 					{session ? (
 						<Button className='text-black' onClick={() => signOut()}>Wyloguj się</Button>
 					) : (
-						<Button className='text-black' onClick={() => signIn('google')}>Zaloguj się</Button>
+						<Button className='text-black' onClick={() => handleSignIn()}>Zaloguj się</Button>
 					)}
 				</div>
 

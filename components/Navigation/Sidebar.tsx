@@ -1,3 +1,4 @@
+// components/Sidebar.tsx
 'use client'
 import { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -13,20 +14,29 @@ import {
 	faArrowRight,
 } from '@fortawesome/free-solid-svg-icons'
 import Image from 'next/image'
+import { usePathname } from 'next/navigation' // Importujemy usePathname
 import logo from '../../public/icon/logo.svg'
-import { signOut, useSession } from 'next-auth/react' // Pobranie useSession
+import { signOut, useSession } from 'next-auth/react'
 
 const Sidebar = () => {
 	const [isCollapsed, setIsCollapsed] = useState(false)
 	const currentYear = new Date().getFullYear()
 
-	// Pobranie danych użytkownika
 	const { data: session } = useSession()
 	const user = session?.user
+	const pathname = usePathname() // Zamiast router.pathname używamy usePathname()
+
+	const handleSignOut = async () => {
+		signOut({
+			callbackUrl: '/',
+		})
+	}
+
+	if (pathname == '/') return null
 
 	return (
 		<div
-			className={`h-screen bg-black text-white flex flex-col transition-all duration-300 ${
+			className={`h-screen bg-black text-white flex flex-col fixed left-0 top-0 transition-all duration-300 ${
 				isCollapsed ? 'w-[70px]' : 'w-[280px]'
 			}`}>
 			<div
@@ -54,7 +64,7 @@ const Sidebar = () => {
 			{/* Nawigacja */}
 			<nav className='mt-5 px-2 font-thin'>
 				{[
-					{ label: 'Strona główna', icon: faHome, path: '/' },
+					{ label: 'Strona główna', icon: faHome, path: '/dashboard' },
 					{ label: 'Wyszukiwarka danych', icon: faSearch, path: '/search-data' },
 					{ label: 'Mapa Polski', icon: faMapMarkedAlt, path: '/mapa' },
 					{ label: 'Analizy', icon: faChartBar, path: '/analizy' },
@@ -64,8 +74,8 @@ const Sidebar = () => {
 						key={index}
 						href={item.path}
 						className={`flex items-center p-3 rounded-lg hover:bg-mainColor transition-colors duration-400 cursor-pointer 
-		${isCollapsed ? 'justify-center' : 'justify-start'}`}>
-						<FontAwesomeIcon icon={item.icon} className='text-white' />
+    ${isCollapsed ? 'justify-center' : 'justify-start'}`}>
+						<FontAwesomeIcon icon={item.icon} className='text-white h-4' />
 						{!isCollapsed && <span className='ml-4'>{item.label}</span>}
 					</a>
 				))}
@@ -88,7 +98,7 @@ const Sidebar = () => {
 						</div>
 					)}
 				</div>
-				<button onClick={() => signOut()}>
+				<button onClick={handleSignOut}>
 					<FontAwesomeIcon
 						icon={faSignOutAlt}
 						className='p-3 text-white rounded-lg hover:bg-mainColor transition-colors duration-400 cursor-pointer'

@@ -1,5 +1,7 @@
-
 import { useSession } from 'next-auth/react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSun } from '@fortawesome/free-solid-svg-icons'
+
 import Header from '@/components/Home/Header'
 import HeroSection from '@/components/Home/HeroSection'
 import AboutUs from '@/components/Home/AboutUsSection'
@@ -14,9 +16,13 @@ import Sidebar from '@/components/Navigation/Sidebar'
 export default function LandingPageContenet() {
 	const { data: session, status } = useSession()
 
-	// Jeśli sesja jest ładowana, można dodać loader/spinner
 	if (status === 'loading') {
-		return <p className='text-center mt-10'>Ładowanie...</p>
+		return (
+			<div className='flex flex-col items-center mt-10'>
+				<FontAwesomeIcon icon={faSun} spin className='text-yellow-400 w-12 h-12' />
+				<p className='text-lg text-white  mt-2'>Ładowanie danych pogodowych...</p>
+			</div>
+		)
 	}
 
 	return !session ? (
@@ -32,6 +38,6 @@ export default function LandingPageContenet() {
 			<Footer />
 		</section>
 	) : (
-		<Sidebar />
+		''
 	)
 }
