@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { useSidebar } from '../../components/contexts/SidebarProvider'
-import SectionTitle from '@/components/UI/SectionTitle'
+import PlatformSectionTitle from '@/components/UI/PlatformSectionTitle'
 
 import DailyWeatherDataForm from '../../components/Forms/DailyWeatherDataForm'
 import MonthlyWeatherDataForm from '../../components/Forms/MonthlyWeatherDataForm'
@@ -12,7 +12,7 @@ import MonthlyWeatherDataTable from '../../components/Tables/MonthlyWeatherDataT
 import YearlyWeatherDataTable from '../../components/Tables/YearlyWeatherDataTable'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCalendarDay, faCalendarAlt, faCalendarCheck } from '@fortawesome/free-solid-svg-icons'
+import { faCalendarDay, faCalendarAlt, faCalendar } from '@fortawesome/free-solid-svg-icons'
 
 type City = {
 	id: number
@@ -146,50 +146,74 @@ const SearchData: React.FC = () => {
 
 	return (
 		<section className={sidebarContainer}>
-			<div className='px-6'>
-				<SectionTitle title='Wyszukiwarka danych pogodowych'/>
+			<div className='flex flex-col justify-center items-center px-4 sm:px-6'>
+				<PlatformSectionTitle title='Wyszukiwarka danych pogodowych' />
 
-				<div className='mb-6'>
-					<label className='block text-gray-700 font-semibold mb-2'>Wybierz zakres danych</label>
-					<div className='flex gap-6'>
-						{/* Dni */}
-						<label 
-							className={`cursor-pointer flex flex-col items-center p-4 border-2 rounded-lg transition-all duration-300 ease-in-out ${
-								selectedOption === 'days' ? 'bg-blue-500 border-blue-500 text-white' : 'bg-white border-gray-300 text-gray-700'
-							} hover:bg-blue-100 hover:border-blue-400`}
-							onClick={() => handleOptionChange({ target: { value: 'days' } } as React.ChangeEvent<HTMLInputElement>)}
-						>
-							<FontAwesomeIcon icon={faCalendarDay} className='text-3xl mb-2' />
-							Dni
-						</label>
+				<div className='w-full max-w-md flex flex-col justify-center items-center'>
+					<p className='font-thin my-5 text-center text-lg'>
+						Wybierz miasto i przedział czasowy, aby wyświetlić dane pogodowe!
+					</p>
+					<div className='w-full flex flex-col items-start mb-4'>
+						<p className='mb-2 font-semibold'>Zakres danych:</p>
+						<div className='w-full flex flex-row items-center justify-start gap-4'>
+							{/* Dni */}
+							<div
+								className={`w-20 h-20 cursor-pointer flex flex-col items-center justify-between p-4 border-2 rounded-lg transition-all duration-300 ease-in-out ${
+									selectedOption === 'days'
+										? 'bg-mainColor border-mainColor text-white'
+										: 'bg-white border-gray-300 text-secondaryColor hover:bg-blue-100 hover:border-blue-400'
+								}`}
+								onClick={() =>
+									handleOptionChange({ target: { value: 'days' } } as React.ChangeEvent<HTMLInputElement>)
+								}>
+								<FontAwesomeIcon icon={faCalendarDay} className='text-xl ' />
+								<p className='text-center leading-4 mt-1 text-sm '>
+									Zakres
+									<br />
+									dat
+								</p>
+							</div>
 
-						{/* Miesiące */}
-						<label 
-							className={`cursor-pointer flex flex-col items-center p-4 border-2 rounded-lg transition-all duration-300 ease-in-out ${
-								selectedOption === 'months' ? 'bg-blue-500 border-blue-500 text-white' : 'bg-white border-gray-300 text-gray-700'
-							} hover:bg-blue-100 hover:border-blue-400`}
-							onClick={() => handleOptionChange({ target: { value: 'months' } } as React.ChangeEvent<HTMLInputElement>)}
-						>
-							<FontAwesomeIcon icon={faCalendarAlt} className='text-3xl mb-2' />
-							Miesiące
-						</label>
+							{/* Miesiące */}
+							<div
+								className={`w-20 h-20 cursor-pointer flex flex-col items-center justify-between p-4 border-2 rounded-lg transition-all duration-300 ease-in-out ${
+									selectedOption === 'months'
+										? 'bg-mainColor border-mainColor text-white'
+										: 'bg-white border-gray-300 text-secondaryColor hover:bg-blue-100 hover:border-blue-400'
+								}`}
+								onClick={() =>
+									handleOptionChange({ target: { value: 'months' } } as React.ChangeEvent<HTMLInputElement>)
+								}>
+								<FontAwesomeIcon icon={faCalendarAlt} className='text-xl' />
+								<p className='text-center leading-4 mt-1 text-sm'>
+									Zakres
+									<br />
+									miesięcy
+								</p>
+							</div>
 
-						{/* Lata */}
-						<label 
-							className={`cursor-pointer flex flex-col items-center p-4 border-2 rounded-lg transition-all duration-300 ease-in-out ${
-								selectedOption === 'years' ? 'bg-blue-500 border-blue-500 text-white' : 'bg-white border-gray-300 text-gray-700'
-							} hover:bg-blue-100 hover:border-blue-400`}
-							onClick={() => handleOptionChange({ target: { value: 'years' } } as React.ChangeEvent<HTMLInputElement>)}
-						>
-							<FontAwesomeIcon icon={faCalendarCheck} className='text-3xl mb-2' />
-							Lata
-						</label>
+							{/* Lata */}
+							<div
+								className={`w-20 h-20 cursor-pointer flex flex-col items-center justify-between p-4 border-2 rounded-lg transition-all duration-300 ease-in-out ${
+									selectedOption === 'years'
+										? 'bg-mainColor border-mainColor text-white'
+										: 'bg-white border-gray-300 text-secondaryColor hover:bg-blue-100 hover:border-blue-400'
+								}`}
+								onClick={() =>
+									handleOptionChange({ target: { value: 'years' } } as React.ChangeEvent<HTMLInputElement>)
+								}>
+								<FontAwesomeIcon icon={faCalendar} className='text-xl' />
+								<p className='text-center leading-4 mt-1 text-sm'>
+									Zakres
+									<br />
+									lat
+								</p>
+							</div>
+						</div>
 					</div>
+					{renderForm()}
 				</div>
 
-				{renderForm()}
-
-				{/* Renderowanie tabeli tylko po załadowaniu danych */}
 				{renderTable()}
 			</div>
 		</section>

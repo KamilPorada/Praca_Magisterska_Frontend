@@ -1,5 +1,6 @@
-import React from 'react'
-import { useState } from 'react'
+import React, { useState } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 
 interface YearlyWeatherData {
 	id: number
@@ -34,13 +35,13 @@ const YearlyWeatherDataTable: React.FC<YearlyWeatherDataTableProps> = ({ yearlyD
 			setCurrentPage(page)
 		}
 	}
+
 	return (
-		<div className='mt-6'>
-			<h2 className='text-xl font-semibold text-center mb-4'>Dane pogodowe roczne</h2>
-			<div className='overflow-x-auto shadow-md rounded-lg'>
-				<table className='min-w-full bg-white text-sm text-left text-gray-800'>
-					<thead className='bg-gray-100'>
-						<tr>
+		<div className='flex flex-col justify-center items-center mt-4'>
+			<div className='w-[270px] sm:w-[420px] md:w-[630px] lg:w-[820px] xl:w-[1050px] overflow-x-auto shadow-md rounded-lg'>
+				<table className='bg-white text-sm text-left text-gray-800'>
+					<thead className='bg-mainColor text-white'>
+						<tr className='text-center'>
 							<th className='px-4 py-2 border-b'>L.P.</th>
 							<th className='px-4 py-2 border-b'>Rok</th>
 							<th className='px-4 py-2 border-b'>Maksymalna temperatura (°C)</th>
@@ -58,7 +59,7 @@ const YearlyWeatherDataTable: React.FC<YearlyWeatherDataTableProps> = ({ yearlyD
 					</thead>
 					<tbody>
 						{paginatedData.map((data, index) => (
-							<tr key={data.id} className='odd:bg-gray-50 even:bg-gray-100'>
+							<tr key={data.id} className='odd:bg-gray-200 even:bg-gray-300 text-center'>
 								<td className='px-4 py-2 border-b'>{startIndex + index + 1}</td>
 								<td className='px-4 py-2 border-b'>{data.year}</td>
 								<td className='px-4 py-2 border-b'>{data.maxTemperature}</td>
@@ -81,15 +82,15 @@ const YearlyWeatherDataTable: React.FC<YearlyWeatherDataTableProps> = ({ yearlyD
 				<button
 					onClick={() => goToPage(currentPage - 1)}
 					disabled={currentPage === 1}
-					className={`px-4 py-2 rounded-lg ${currentPage === 1 ? 'bg-gray-300' : 'bg-blue-500 text-white'}`}>
-					Poprzednia
+					className={`px-4 py-2 rounded-full ${currentPage === 1 ? 'bg-gray-300' : 'bg-mainColor text-white'}`}>
+					<FontAwesomeIcon icon={faChevronLeft} /> {/* Strzałka w lewo */}
 				</button>
 				<span className='px-4 py-2'>{`Strona ${currentPage} z ${totalPages}`}</span>
 				<button
 					onClick={() => goToPage(currentPage + 1)}
 					disabled={currentPage === totalPages}
-					className={`px-4 py-2 rounded-lg ${currentPage === totalPages ? 'bg-gray-300' : 'bg-blue-500 text-white'}`}>
-					Następna
+					className={`px-4 py-2 rounded-full ${currentPage === totalPages ? 'bg-gray-300' : 'bg-mainColor text-white'}`}>
+					<FontAwesomeIcon icon={faChevronRight} /> {/* Strzałka w prawo */}
 				</button>
 			</div>
 		</div>

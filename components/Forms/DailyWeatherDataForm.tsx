@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import Button from '../UI/Button'
 
 type City = {
 	id: number
@@ -14,14 +15,22 @@ const DailyWeatherDataForm: React.FC<DailyWeatherDataFormProps> = ({ cities, onD
 	const [selectedCity, setSelectedCity] = useState<number | undefined>(undefined)
 	const [startDate, setStartDate] = useState<string>('')
 	const [endDate, setEndDate] = useState<string>('')
+	const [errors, setErrors] = useState<{ city?: boolean; startDate?: boolean; endDate?: boolean }>({})
+
+	const validateForm = () => {
+		const newErrors = {
+			city: !selectedCity,
+			startDate: !startDate,
+			endDate: !endDate
+		}
+		setErrors(newErrors)
+		return !Object.values(newErrors).some(Boolean)
+	}
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
 
-		if (!selectedCity || !startDate || !endDate) {
-			alert('Please fill in all fields')
-			return
-		}
+		if (!validateForm()) return
 
 		try {
 			const response = await fetch(
@@ -32,14 +41,7 @@ const DailyWeatherDataForm: React.FC<DailyWeatherDataFormProps> = ({ cities, onD
 			}
 			const data = await response.json()
 
-			// Sortowanie danych po dacie w porządku rosnącym
-			const sortedData = data.sort((a: any, b: any) => {
-				const dateA = new Date(a.date)
-				const dateB = new Date(b.date)
-				return dateA.getTime() - dateB.getTime() // sortowanie rosnąco
-			})
-
-			// Przekazanie posortowanych danych do komponentu nadrzędnego
+			const sortedData = data.sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime())
 			onDataFetched(sortedData)
 		} catch (error) {
 			console.error('Error fetching daily weather data:', error)
@@ -53,18 +55,17 @@ const DailyWeatherDataForm: React.FC<DailyWeatherDataFormProps> = ({ cities, onD
 	}, [cities])
 
 	return (
-		<div className='max-w-md mx-auto p-4 border border-gray-300 rounded-lg shadow-md bg-white text-black'>
-			<h2 className='text-xl font-semibold text-center mb-4'>Wczytaj dane pogodowe analizując dzień po dniu</h2>
+		<div className='w-full max-w-md mx-auto'>
 			<form onSubmit={handleSubmit}>
 				<div className='mb-4'>
-					<label htmlFor='city' className='block text-gray-700 font-semibold mb-2'>
-						Wybierz miasto
+					<label htmlFor='city' className='block text-white font-semibold mb-2'>
+						Miasto:
 					</label>
 					<select
 						id='city'
 						value={selectedCity}
 						onChange={e => setSelectedCity(Number(e.target.value))}
-						className='w-full p-2 border border-gray-300 rounded-md'>
+						className={`w-full p-2 border text-black ${errors.city ? 'border-red-500 border-2' : 'border-gray-300'} rounded-md`}>
 						<option value='' disabled>
 							Wybierz miasto
 						</option>
@@ -77,34 +78,31 @@ const DailyWeatherDataForm: React.FC<DailyWeatherDataFormProps> = ({ cities, onD
 				</div>
 
 				<div className='mb-4'>
-					<label htmlFor='start-date' className='block text-gray-700 font-semibold mb-2'>
-						Data początkowa
+					<label htmlFor='start-date' className='block text-white font-semibold mb-2'>
+						Data początkowa:
 					</label>
 					<input
 						id='start-date'
 						type='date'
 						value={startDate}
 						onChange={e => setStartDate(e.target.value)}
-						className='w-full p-2 border border-gray-300 rounded-md'
+						className={`w-full p-2 border text-black ${errors.startDate ? 'border-red-500 border-2' : 'border-gray-300'} rounded-md`}
 					/>
 				</div>
 
 				<div className='mb-4'>
-					<label htmlFor='end-date' className='block text-gray-700 font-semibold mb-2'>
-						Data końcowa
+					<label htmlFor='end-date' className='block text-white font-semibold mb-2'>
+						Data końcowa:
 					</label>
 					<input
 						id='end-date'
 						type='date'
 						value={endDate}
 						onChange={e => setEndDate(e.target.value)}
-						className='w-full p-2 border border-gray-300 rounded-md'
+						className={`w-full p-2 border text-black ${errors.endDate ? 'border-red-500 border-2' : 'border-gray-300'} rounded-md`}
 					/>
 				</div>
-
-				<button type='submit' className='w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600'>
-					Wyszukaj dane
-				</button>
+				<Button className='w-full mt-2'>Wyszukaj dane </Button>
 			</form>
 		</div>
 	)
