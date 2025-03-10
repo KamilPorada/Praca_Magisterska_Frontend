@@ -42,37 +42,37 @@ const YearlyWeatherDataTable: React.FC<YearlyWeatherDataTableProps> = ({ yearlyD
 				<table className='bg-white text-sm text-left text-gray-800'>
 					<thead className='bg-mainColor text-white'>
 						<tr className='text-center'>
-							<th className='px-4 py-2 border-b'>L.P.</th>
-							<th className='px-4 py-2 border-b'>Rok</th>
-							<th className='px-4 py-2 border-b'>Maksymalna temperatura (°C)</th>
-							<th className='px-4 py-2 border-b'>Minimalna temperatura (°C)</th>
-							<th className='px-4 py-2 border-b'>Maksymalna odczuwalna temperatura (°C)</th>
-							<th className='px-4 py-2 border-b'>Minimalna odczuwalna temperatura (°C)</th>
-							<th className='px-4 py-2 border-b'>Maksymalna prędkość wiatru (km/h)</th>
-							<th className='px-4 py-2 border-b'>Porywy wiatru (km/h)</th>
-							<th className='px-4 py-2 border-b'>Całkowite opady (mm)</th>
-							<th className='px-4 py-2 border-b'>Deszcz (mm)</th>
-							<th className='px-4 py-2 border-b'>Śnieg (mm)</th>
-							<th className='px-4 py-2 border-b'>Czas opadów (godz.)</th>
-							<th className='px-4 py-2 border-b'>Dominujący kierunek wiatru (°)</th>
+							<th className='px-6 py-2 border-b'>L.P.</th>
+							<th className='px-6 py-2 border-b'>Rok</th>
+							<th className='px-6 py-2 border-b'>Średnia maksymalna temperatura (°C)</th>
+							<th className='px-6 py-2 border-b'>Średnia minimalna temperatura (°C)</th>
+							<th className='px-6 py-2 border-b'>Średnia maksymalna odczuwalna temperatura (°C)</th>
+							<th className='px-6 py-2 border-b'>Średnia minimalna odczuwalna temperatura (°C)</th>
+							<th className='px-6 py-2 border-b'>Średnia prędkość wiatru (km/h)</th>
+							<th className='px-6 py-2 border-b'>Średnie porywy wiatru (km/h)</th>
+							<th className='px-6 py-2 border-b'>Suma opadów (mm)</th>
+							<th className='px-6 py-2 border-b'>Suma opadów deszczu (mm)</th>
+							<th className='px-6 py-2 border-b'>Suma opadów śniegu (mm)</th>
+							<th className='px-6 py-2 border-b'>Sumaryczny czas opadów (godz.)</th>
+							<th className='px-6 py-2 border-b'>Dominujący kierunek wiatru (°)</th>
 						</tr>
 					</thead>
 					<tbody>
 						{paginatedData.map((data, index) => (
 							<tr key={data.id} className='odd:bg-gray-200 even:bg-gray-300 text-center'>
-								<td className='px-4 py-2 border-b'>{startIndex + index + 1}</td>
-								<td className='px-4 py-2 border-b'>{data.year}</td>
-								<td className='px-4 py-2 border-b'>{data.maxTemperature}</td>
-								<td className='px-4 py-2 border-b'>{data.minTemperature}</td>
-								<td className='px-4 py-2 border-b'>{data.maxFeelsLikeTemperature}</td>
-								<td className='px-4 py-2 border-b'>{data.minFeelsLikeTemperature}</td>
-								<td className='px-4 py-2 border-b'>{data.maxWindSpeed}</td>
-								<td className='px-4 py-2 border-b'>{data.windGusts}</td>
-								<td className='px-4 py-2 border-b'>{data.totalPrecipitation}</td>
-								<td className='px-4 py-2 border-b'>{data.rain}</td>
-								<td className='px-4 py-2 border-b'>{data.snow}</td>
-								<td className='px-4 py-2 border-b'>{data.precipitationTime}</td>
-								<td className='px-4 py-2 border-b'>{data.dominantWindDirection}</td>
+								<td className='px-6 py-2 border-b'>{startIndex + index + 1}</td>
+								<td className='px-6 py-2 border-b'>{data.year}</td>
+								<td className='px-6 py-2 border-b'>{data.maxTemperature}</td>
+								<td className='px-6 py-2 border-b'>{data.minTemperature}</td>
+								<td className='px-6 py-2 border-b'>{data.maxFeelsLikeTemperature}</td>
+								<td className='px-6 py-2 border-b'>{data.minFeelsLikeTemperature}</td>
+								<td className='px-6 py-2 border-b'>{data.maxWindSpeed}</td>
+								<td className='px-6 py-2 border-b'>{data.windGusts}</td>
+								<td className='px-6 py-2 border-b'>{data.totalPrecipitation}</td>
+								<td className='px-6 py-2 border-b'>{data.rain}</td>
+								<td className='px-6 py-2 border-b'>{data.snow}</td>
+								<td className='px-6 py-2 border-b'>{data.precipitationTime}</td>
+								<td className='px-6 py-2 border-b'>{data.dominantWindDirection}</td>
 							</tr>
 						))}
 					</tbody>
@@ -82,14 +82,14 @@ const YearlyWeatherDataTable: React.FC<YearlyWeatherDataTableProps> = ({ yearlyD
 				<button
 					onClick={() => goToPage(currentPage - 1)}
 					disabled={currentPage === 1}
-					className={`px-4 py-2 rounded-full ${currentPage === 1 ? 'bg-gray-300' : 'bg-mainColor text-white'}`}>
+					className={`px-6 py-2 rounded-full ${currentPage === 1 ? 'bg-gray-300' : 'bg-mainColor text-white'}`}>
 					<FontAwesomeIcon icon={faChevronLeft} /> {/* Strzałka w lewo */}
 				</button>
-				<span className='px-4 py-2'>{`Strona ${currentPage} z ${totalPages}`}</span>
+				<span className='px-6 py-2'>{`Strona ${currentPage} z ${totalPages}`}</span>
 				<button
 					onClick={() => goToPage(currentPage + 1)}
 					disabled={currentPage === totalPages}
-					className={`px-4 py-2 rounded-full ${currentPage === totalPages ? 'bg-gray-300' : 'bg-mainColor text-white'}`}>
+					className={`px-6 py-2 rounded-full ${currentPage === totalPages ? 'bg-gray-300' : 'bg-mainColor text-white'}`}>
 					<FontAwesomeIcon icon={faChevronRight} /> {/* Strzałka w prawo */}
 				</button>
 			</div>

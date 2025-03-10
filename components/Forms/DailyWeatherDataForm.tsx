@@ -13,15 +13,17 @@ type DailyWeatherDataFormProps = {
 
 const DailyWeatherDataForm: React.FC<DailyWeatherDataFormProps> = ({ cities, onDataFetched }) => {
 	const [selectedCity, setSelectedCity] = useState<number | undefined>(undefined)
+	const [cityName, setCityName] = useState<string>('')
 	const [startDate, setStartDate] = useState<string>('')
 	const [endDate, setEndDate] = useState<string>('')
 	const [errors, setErrors] = useState<{ city?: boolean; startDate?: boolean; endDate?: boolean }>({})
+	const [dataFetched, setDataFetched] = useState<boolean>(false) // New state to track if data is fetched
 
 	const validateForm = () => {
 		const newErrors = {
 			city: !selectedCity,
 			startDate: !startDate,
-			endDate: !endDate
+			endDate: !endDate,
 		}
 		setErrors(newErrors)
 		return !Object.values(newErrors).some(Boolean)
@@ -43,6 +45,7 @@ const DailyWeatherDataForm: React.FC<DailyWeatherDataFormProps> = ({ cities, onD
 
 			const sortedData = data.sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime())
 			onDataFetched(sortedData)
+			setDataFetched(true)
 		} catch (error) {
 			console.error('Error fetching daily weather data:', error)
 		}
@@ -51,8 +54,16 @@ const DailyWeatherDataForm: React.FC<DailyWeatherDataFormProps> = ({ cities, onD
 	useEffect(() => {
 		if (cities.length > 0) {
 			setSelectedCity(cities[0].id)
+			setCityName(cities[0].name)
 		}
 	}, [cities])
+
+	useEffect(() => {
+		const city = cities.find(city => city.id === selectedCity)
+		if (city) {
+			setCityName(city.name)
+		}
+	}, [selectedCity, cities])
 
 	return (
 		<div className='w-full max-w-md mx-auto'>
@@ -65,7 +76,9 @@ const DailyWeatherDataForm: React.FC<DailyWeatherDataFormProps> = ({ cities, onD
 						id='city'
 						value={selectedCity}
 						onChange={e => setSelectedCity(Number(e.target.value))}
-						className={`w-full p-2 border text-black ${errors.city ? 'border-red-500 border-2' : 'border-gray-300'} rounded-md`}>
+						className={`w-full p-2 border text-black ${
+							errors.city ? 'border-red-500 border-2' : 'border-gray-300'
+						} rounded-md`}>
 						<option value='' disabled>
 							Wybierz miasto
 						</option>
@@ -86,7 +99,9 @@ const DailyWeatherDataForm: React.FC<DailyWeatherDataFormProps> = ({ cities, onD
 						type='date'
 						value={startDate}
 						onChange={e => setStartDate(e.target.value)}
-						className={`w-full p-2 border text-black ${errors.startDate ? 'border-red-500 border-2' : 'border-gray-300'} rounded-md`}
+						className={`w-full p-2 border text-black ${
+							errors.startDate ? 'border-red-500 border-2' : 'border-gray-300'
+						} rounded-md`}
 					/>
 				</div>
 
@@ -99,11 +114,29 @@ const DailyWeatherDataForm: React.FC<DailyWeatherDataFormProps> = ({ cities, onD
 						type='date'
 						value={endDate}
 						onChange={e => setEndDate(e.target.value)}
-						className={`w-full p-2 border text-black ${errors.endDate ? 'border-red-500 border-2' : 'border-gray-300'} rounded-md`}
+						className={`w-full p-2 border text-black ${
+							errors.endDate ? 'border-red-500 border-2' : 'border-gray-300'
+						} rounded-md`}
 					/>
 				</div>
 				<Button className='w-full mt-2'>Wyszukaj dane </Button>
 			</form>
+			{dataFetched && selectedCity && startDate && endDate && (
+				<p className='mt-16 text-center text-white text-base sm:text-xl'>
+					Dane pogodowe dla miasta {cityName} od{' '}
+					{new Date(startDate).toLocaleDateString('pl-PL', {
+						day: '2-digit',
+						month: '2-digit',
+						year: 'numeric',
+					})}{' '}
+					do{' '}
+					{new Date(endDate).toLocaleDateString('pl-PL', {
+						day: '2-digit',
+						month: '2-digit',
+						year: 'numeric',
+					})}
+				</p>
+			)}
 		</div>
 	)
 }

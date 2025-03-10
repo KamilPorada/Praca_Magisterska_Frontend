@@ -14,12 +14,29 @@ type MonthlyWeatherDataFormProps = {
 
 const MonthlyWeatherDataForm: React.FC<MonthlyWeatherDataFormProps> = ({ cities, onDataFetched }) => {
 	const [selectedCity, setSelectedCity] = useState<number | undefined>()
+	const [cityName, setCityName] = useState<string>('')
 	const [startMonth, setStartMonth] = useState<number>(1)
 	const [startYear, setStartYear] = useState<number>(1950) // Zmieniamy na 1950
 	const [endMonth, setEndMonth] = useState<number>(12)
 	const [endYear, setEndYear] = useState<number>(2024) // Zmieniamy na 2024
+	const [dataFetched, setDataFetched] = useState<boolean>(false) // New state to track if data is fetched
 
 	const years = Array.from({ length: 2024 - 1950 + 1 }, (_, i) => 1950 + i) // Generowanie lat od 1950 do 2024
+
+	const monthNames = [
+		'stycznia',
+		'lutego',
+		'marca',
+		'kwietnia',
+		'maja',
+		'czerwca',
+		'lipieca',
+		'sierpnia',
+		'września',
+		'października',
+		'listopada',
+		'grudnia',
+	]
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
@@ -38,6 +55,7 @@ const MonthlyWeatherDataForm: React.FC<MonthlyWeatherDataFormProps> = ({ cities,
 			}
 			const data = await response.json()
 			onDataFetched(data) // Przekaż pobrane dane do komponentu nadrzędnego
+			setDataFetched(true)
 		} catch (error) {
 			console.error('Error fetching monthly weather data:', error)
 		}
@@ -46,8 +64,16 @@ const MonthlyWeatherDataForm: React.FC<MonthlyWeatherDataFormProps> = ({ cities,
 	useEffect(() => {
 		if (cities.length > 0) {
 			setSelectedCity(cities[0].id)
+			setCityName(cities[0].name)
 		}
 	}, [cities])
+
+	useEffect(() => {
+		const city = cities.find(city => city.id === selectedCity)
+		if (city) {
+			setCityName(city.name)
+		}
+	}, [selectedCity, cities])
 
 	return (
 		<div className='w-full max-w-md mx-auto'>
@@ -154,9 +180,13 @@ const MonthlyWeatherDataForm: React.FC<MonthlyWeatherDataFormProps> = ({ cities,
 					</select>
 				</div>
 
-        <Button className='w-full mt-2'>Wyszukaj dane </Button>
-
+				<Button className='w-full mt-2'>Wyszukaj dane </Button>
 			</form>
+			{dataFetched && selectedCity && startYear && endYear && (
+				<p className='mt-16 text-center text-white text-base sm:text-xl'>
+					Dane pogodowe dla miasta {cityName} od {monthNames[startMonth - 1]} {startYear} do {monthNames[endMonth - 1]} {endYear}
+				</p>
+			)}
 		</div>
 	)
 }
