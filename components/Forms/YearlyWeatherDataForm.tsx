@@ -119,7 +119,7 @@ const YearlyWeatherDataForm: React.FC<YearlyWeatherDataFormProps> = ({ cities, o
           </select>
         </div>
 
-        <Button className='w-full mt-2'>Wyszukaj dane </Button>
+        <Button className='w-full mt-2'>Wczytaj dane </Button>
 
       </form>
 

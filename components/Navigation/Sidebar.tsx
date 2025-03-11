@@ -9,6 +9,7 @@ import {
 	faSearch,
 	faChartBar,
 	faFileAlt,
+	faCalculator,
 	faSignOutAlt,
 	faUser,
 	faArrowLeft,
@@ -68,9 +69,9 @@ const Sidebar = () => {
 				{[
 					{ label: 'Strona główna', icon: faHome, path: '/dashboard' },
 					{ label: 'Wyszukiwarka danych', icon: faSearch, path: '/search-data' },
-					{ label: 'Mapa Polski', icon: faMapMarkedAlt, path: '/mapa' },
-					{ label: 'Analizy', icon: faChartBar, path: '/analizy' },
-					{ label: 'Raporty', icon: faFileAlt, path: '/raporty' },
+					{ label: 'Analiza statystyczna', icon: faCalculator, path: '/stats-data' },
+					// { label: 'Analizy', icon: faChartBar, path: '/analizy' },
+					// { label: 'Raporty', icon: faFileAlt, path: '/raporty' },
 				].map((item, index) => (
 					<a
 						key={index}

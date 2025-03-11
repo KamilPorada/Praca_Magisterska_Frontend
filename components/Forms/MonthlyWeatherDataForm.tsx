@@ -180,7 +180,7 @@ const MonthlyWeatherDataForm: React.FC<MonthlyWeatherDataFormProps> = ({ cities,
 					</select>
 				</div>
 
-				<Button className='w-full mt-2'>Wyszukaj dane </Button>
+				<Button className='w-full mt-2'>Wczytaj dane </Button>
 			</form>
 			{dataFetched && selectedCity && startYear && endYear && (
 				<p className='mt-16 text-center text-white text-base sm:text-xl'>
