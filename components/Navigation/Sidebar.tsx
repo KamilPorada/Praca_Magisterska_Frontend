@@ -1,4 +1,3 @@
-// components/Sidebar.tsx
 'use client'
 import { useState } from 'react'
 import { useSidebar } from '../../components/contexts/SidebarProvider'

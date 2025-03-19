@@ -1,7 +1,7 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import PlatformSectionTitle from '@/components/UI/PlatformSectionTitle'
-import DailyWeatherDataForm2 from '@/components/Forms/DailyWeatherDataForm2'
+import StatisticsForm from '@/components/Forms/StatisticsForm'
 import { useSidebar } from '../../components/contexts/SidebarProvider'
 import WeatherStatsNarrative from '@/components/Other/WeatherStatsNarrative'
 
@@ -11,7 +11,7 @@ type City = {
 }
 
 type FormData = {
-	selectedCity: City // ✅ Poprawna nazwa
+	cityName: string
 	startDate: string
 	endDate: string
 }
@@ -47,6 +47,7 @@ const StatsData = () => {
 	const [isFormSubmitted, setIsFormSubmitted] = useState(false)
 	const [loading, setLoading] = useState(false)
 	const { sidebarContainer } = useSidebar()
+	const resultsRef = useRef<HTMLDivElement | null>(null)
 
 	const handleDataFetched = (data: WeatherStats) => {
 		setLoading(true)
@@ -54,6 +55,13 @@ const StatsData = () => {
 			setStats(data)
 			setIsFormSubmitted(true)
 			setLoading(false)
+
+			setTimeout(() => {
+				resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+				setTimeout(() => {
+					window.scrollBy({ top: 150, left: 0, behavior: 'smooth' }) 
+				}, 300)
+			}, 300)
 		}, 1000)
 	}
 
@@ -86,9 +94,11 @@ const StatsData = () => {
 					<p className='font-thin my-5 text-center text-lg'>
 						Wybierz miasto oraz zakres czasowy, aby przeprowadzić analizę statystyczną danych pogodowych!
 					</p>
-					<DailyWeatherDataForm2 cities={cities} onDataFetched={handleDataFetched} onFormData={handleFormData} />
+					<StatisticsForm cities={cities} onDataFetched={handleDataFetched} onFormData={handleFormData} />
 				</div>
-				{isFormSubmitted && stats && formData && <WeatherStatsNarrative stats={stats} formData={formData} />}
+				<div ref={resultsRef} className='mt-10'>
+					{isFormSubmitted && stats && formData && <WeatherStatsNarrative stats={stats} formData={formData} />}
+				</div>
 			</div>
 		</section>
 	)
