@@ -10,6 +10,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCalendarDay, faCalendarAlt, faCalendar } from '@fortawesome/free-solid-svg-icons'
 
 import TemperatureChart from '@/components/Charts/TemperatureCharts'
+import RainChart from '@/components/Charts/RainChart'
+import SnowChart from '@/components/Charts/SnowChart'
+import WindDirectionChart from '@/components/Charts/WindDirectionChart'
 
 type City = {
 	id: number
@@ -200,8 +203,17 @@ const Charts = () => {
 					{renderForm()}
 				</div>
 				{isFormSubmitted && (
-					<div className='w-full mt-10 flex flex-row justify-center items-center gap-6'>
+					<div className='w-full mt-10 flex flex-wrap flex-row justify-between items-center gap-6'>
 						<TemperatureChart
+							data={selectedOption === 'days' ? dailyData : selectedOption === 'months' ? monthlyData : yearlyData}
+						/>
+                        <RainChart
+							data={selectedOption === 'days' ? dailyData : selectedOption === 'months' ? monthlyData : yearlyData}
+						/>
+                        <SnowChart
+							data={selectedOption === 'days' ? dailyData : selectedOption === 'months' ? monthlyData : yearlyData}
+						/>
+                        <WindDirectionChart
 							data={selectedOption === 'days' ? dailyData : selectedOption === 'months' ? monthlyData : yearlyData}
 						/>
 					</div>
