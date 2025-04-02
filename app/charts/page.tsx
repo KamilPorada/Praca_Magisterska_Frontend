@@ -12,7 +12,13 @@ import { faCalendarDay, faCalendarAlt, faCalendar } from '@fortawesome/free-soli
 import TemperatureChart from '@/components/Charts/TemperatureCharts'
 import RainChart from '@/components/Charts/RainChart'
 import SnowChart from '@/components/Charts/SnowChart'
+import PrecipitationChart from '@/components/Charts/PrecipitationChart'
+import PrecipitationDurationChart from '@/components/Charts/PrecipitationDurationChart'
+import PrecipitationVsSolarRadiationChart from '@/components/Charts/PrecipitationVsSolarRadiationChart'
+import WindChart from '@/components/Charts/WindChart'
 import WindDirectionChart from '@/components/Charts/WindDirectionChart'
+import DayNightDurationChart from '@/components/Charts/DayNightDurationChart'
+import SunriseSunsetTimeChart from '@/components/Charts/SunriseSunsetTimeChart'
 
 type City = {
 	id: number
@@ -207,15 +213,30 @@ const Charts = () => {
 						<TemperatureChart
 							data={selectedOption === 'days' ? dailyData : selectedOption === 'months' ? monthlyData : yearlyData}
 						/>
-                        <RainChart
+						<RainChart
 							data={selectedOption === 'days' ? dailyData : selectedOption === 'months' ? monthlyData : yearlyData}
 						/>
-                        <SnowChart
+						<SnowChart
 							data={selectedOption === 'days' ? dailyData : selectedOption === 'months' ? monthlyData : yearlyData}
 						/>
-                        <WindDirectionChart
+						<PrecipitationChart
 							data={selectedOption === 'days' ? dailyData : selectedOption === 'months' ? monthlyData : yearlyData}
 						/>
+                        <PrecipitationDurationChart
+							data={selectedOption === 'days' ? dailyData : selectedOption === 'months' ? monthlyData : yearlyData}
+						/>
+                        <PrecipitationVsSolarRadiationChart
+							data={selectedOption === 'days' ? dailyData : monthlyData}
+						/>
+						<WindChart
+							data={selectedOption === 'days' ? dailyData : selectedOption === 'months' ? monthlyData : yearlyData}
+						/>
+						<WindDirectionChart
+							data={selectedOption === 'days' ? dailyData : selectedOption === 'months' ? monthlyData : yearlyData}
+						/>
+						{selectedOption === 'days' && <DayNightDurationChart data={dailyData} />}
+                        {selectedOption === 'days' && <SunriseSunsetTimeChart data={dailyData} />}
+
 					</div>
 				)}
 			</div>
