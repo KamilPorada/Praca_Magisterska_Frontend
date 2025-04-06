@@ -19,6 +19,8 @@ import WindChart from '@/components/Charts/WindChart'
 import WindDirectionChart from '@/components/Charts/WindDirectionChart'
 import DayNightDurationChart from '@/components/Charts/DayNightDurationChart'
 import SunriseSunsetTimeChart from '@/components/Charts/SunriseSunsetTimeChart'
+import EvapotranspirationChart from '@/components/Charts/EvapotranspirationChart'
+import SolarChart from '@/components/Charts/SolarChart'
 
 type City = {
 	id: number
@@ -216,27 +218,34 @@ const Charts = () => {
 						<RainChart
 							data={selectedOption === 'days' ? dailyData : selectedOption === 'months' ? monthlyData : yearlyData}
 						/>
-						<SnowChart
-							data={selectedOption === 'days' ? dailyData : selectedOption === 'months' ? monthlyData : yearlyData}
-						/>
 						<PrecipitationChart
 							data={selectedOption === 'days' ? dailyData : selectedOption === 'months' ? monthlyData : yearlyData}
 						/>
-                        <PrecipitationDurationChart
+						<SnowChart
 							data={selectedOption === 'days' ? dailyData : selectedOption === 'months' ? monthlyData : yearlyData}
 						/>
-                        <PrecipitationVsSolarRadiationChart
-							data={selectedOption === 'days' ? dailyData : monthlyData}
+
+						<PrecipitationDurationChart
+							data={selectedOption === 'days' ? dailyData : selectedOption === 'months' ? monthlyData : yearlyData}
+						/>
+						{(selectedOption === 'days' || selectedOption === 'months') && (
+							<PrecipitationVsSolarRadiationChart data={selectedOption === 'days' ? dailyData : monthlyData} />
+						)}
+						<WindDirectionChart
+							data={selectedOption === 'days' ? dailyData : selectedOption === 'months' ? monthlyData : yearlyData}
 						/>
 						<WindChart
 							data={selectedOption === 'days' ? dailyData : selectedOption === 'months' ? monthlyData : yearlyData}
 						/>
-						<WindDirectionChart
-							data={selectedOption === 'days' ? dailyData : selectedOption === 'months' ? monthlyData : yearlyData}
-						/>
-						{selectedOption === 'days' && <DayNightDurationChart data={dailyData} />}
-                        {selectedOption === 'days' && <SunriseSunsetTimeChart data={dailyData} />}
 
+						{selectedOption === 'days' && <DayNightDurationChart data={dailyData} />}
+						{selectedOption === 'days' && <SunriseSunsetTimeChart data={dailyData} />}
+						{(selectedOption === 'days' || selectedOption === 'months') && (
+							<EvapotranspirationChart data={selectedOption === 'days' ? dailyData : monthlyData} />
+						)}
+						{(selectedOption === 'days' || selectedOption === 'months') && (
+							<SolarChart data={selectedOption === 'days' ? dailyData : monthlyData} />
+						)}
 					</div>
 				)}
 			</div>

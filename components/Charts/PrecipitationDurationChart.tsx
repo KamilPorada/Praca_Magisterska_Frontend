@@ -75,10 +75,9 @@ const formatTime = (value: number) => {
 
 const PrecipitationDurationChart: React.FC<ChartProps> = ({ data }) => {
 	// Rozpoznanie typu danych
-	const isDaily = (data[0] as DailyWeatherData).date !== undefined
-	const isMonthly = (data[0] as MonthlyWeatherData).month !== undefined
-	const isYearly = (data[0] as YearlyWeatherData).year !== undefined
-
+	const isDaily = 'sunlightDuration' in data[0] // Sprawdzenie, czy mamy dane dzienne
+	const isMonthly = 'dailySunshine' in data[0] // Sprawdzenie, czy mamy dane miesięczne
+	const isYearly = !isDaily && !isMonthly
 	// Przetwarzanie danych do formatu wykresu
 	const chartData = data.map(item => {
 		if (isDaily) {
@@ -100,9 +99,13 @@ const PrecipitationDurationChart: React.FC<ChartProps> = ({ data }) => {
 		return {}
 	})
 
+	console.log('isDaily:', isDaily, 'isMonthly:', isMonthly, 'isYearly:', isYearly) // Logowanie warunków
+
 	return (
-		<div className='w-full h-96 bg-secondaryColor p-4 rounded-lg shadow-lg'>
-			<h2 className='text-sm sm:text-base font-thin text-center text-gray-200 mb-4'>Czas trwania opadów</h2>
+		<div className={`${isYearly ? 'w-full' : 'w-3/5'} h-96 bg-secondaryColor p-4 rounded-lg shadow-lg`}>
+			<h2 className='text-sm sm:text-base font-thin text-center text-gray-200 mb-4'>
+				Wykrees słupkowy ilustrujący czas trwania opadów
+			</h2>
 			<ResponsiveContainer width='100%' height='85%'>
 				<AreaChart data={chartData}>
 					<CartesianGrid vertical={false} stroke='#ffffff' strokeDasharray='4' strokeWidth={0.3} />

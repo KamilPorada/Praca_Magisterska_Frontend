@@ -80,7 +80,7 @@ const PrecipitationChart: React.FC<ChartProps> = ({ data }) => {
 	].filter(item => item.value > 0)
 
 	return (
-		<div className='w-[400px] h-96 bg-secondaryColor p-4 rounded-lg shadow-lg'>
+		<div className='w-1/4 h-96 bg-secondaryColor p-4 rounded-lg shadow-lg'>
 			<h2 className='text-sm sm:text-base font-thin text-center text-gray-200 mb-4'>Procentowy udział opadów</h2>
 			<ResponsiveContainer width='100%' height='90%'>
 				<PieChart>

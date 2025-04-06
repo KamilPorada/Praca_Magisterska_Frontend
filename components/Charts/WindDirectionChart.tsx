@@ -87,9 +87,9 @@ const WindDirectionChart: React.FC<ChartProps> = ({ data }) => {
 	})
 
 	return (
-		<div className='w-[400px] h-96 bg-secondaryColor p-4 rounded-lg shadow-lg'>
+		<div className='w-1/3 h-96 bg-secondaryColor p-4 rounded-lg shadow-lg'>
 			<h2 className='text-sm sm:text-base font-thin text-center text-gray-200 mb-4'>
-				Rozkład dominujących kierunków wiatru
+				Wykres ilustrujący rozkład dominujących kierunków wiatru
 			</h2>
 			<ResponsiveContainer width='100%' height='90%'>
 				<RadarChart cx='50%' cy='50%' outerRadius='80%' data={processedData}>

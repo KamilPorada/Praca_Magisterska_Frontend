@@ -62,8 +62,8 @@ const DayNightDurationChart: React.FC<ChartProps> = ({ data }) => {
 	})
 
 	return (
-		<div className='w-full h-96 bg-secondaryColor p-4 rounded-lg shadow-lg'>
-			<h2 className='text-sm sm:text-base font-thin text-center text-gray-200 mb-4'>Długość dnia i nocy</h2>
+		<div className='w-3/5 h-96 bg-secondaryColor p-4 rounded-lg shadow-lg'>
+			<h2 className='text-sm sm:text-base font-thin text-center text-gray-200 mb-4'>Wykres ilustrujący długość dnia i nocy</h2>
 			<ResponsiveContainer width='100%' height='85%'>
 				<AreaChart data={chartData}>
 					<CartesianGrid vertical={false} stroke='#ffffff' strokeDasharray='6' strokeWidth={0.2} />

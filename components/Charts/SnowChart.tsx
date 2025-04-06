@@ -96,7 +96,7 @@ const SnowChart: React.FC<ChartProps> = ({ data }) => {
 	})
 
 	return (
-		<div className='w-[500px] h-96 bg-secondaryColor p-4 rounded-lg shadow-lg'>
+		<div className='w-1/3 h-96 bg-secondaryColor p-4 rounded-lg shadow-lg'>
 			<h2 className='text-sm sm:text-base font-thin text-center text-gray-200 mb-4'>
 				Wykres słupkowy ilustrujący opady śniegu
 			</h2>

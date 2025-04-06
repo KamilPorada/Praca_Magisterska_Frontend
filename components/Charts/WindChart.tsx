@@ -97,7 +97,7 @@ const WindChart: React.FC<ChartProps> = ({ data }) => {
 	})
 
 	return (
-		<div className='w-[600px] h-96 bg-secondaryColor p-4 rounded-lg shadow-lg'>
+		<div className='w-3/5 h-96 bg-secondaryColor p-4 rounded-lg shadow-lg'>
 			<h2 className='text-sm sm:text-base font-thin text-center text-gray-200 mb-4'>
 				Wykres liniowy ilustrujący prędkość wiatru oraz porywy
 			</h2>

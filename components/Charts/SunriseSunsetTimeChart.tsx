@@ -72,8 +72,8 @@ const SunriseSunsetTimeChart: React.FC<ChartProps> = ({ data }) => {
       })
 
 	return (
-		<div className='w-full h-96 bg-secondaryColor p-4 rounded-lg shadow-lg'>
-			<h2 className='text-sm sm:text-base font-thin text-center text-gray-200 mb-4'>Czas wschodów i zachodów słońca</h2>
+		<div className='w-1/3 h-96 bg-secondaryColor p-4 rounded-lg shadow-lg'>
+			<h2 className='text-sm sm:text-base font-thin text-center text-gray-200 mb-4'>Wykres ilustrujący czas wschodów i zachodów słońca</h2>
 			<ResponsiveContainer width='100%' height='85%'>
 				<LineChart data={chartData}>
 					<CartesianGrid stroke='#ffffff' strokeDasharray='6' strokeWidth={0.2} />{' '}
