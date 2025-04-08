@@ -4,10 +4,9 @@ import { useSidebar } from '../../components/contexts/SidebarProvider'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
 	faHome,
-	faMapMarkedAlt,
-	faSearch,
 	faChartBar,
-	faFileAlt,
+	faSearch,
+	faLink,
 	faCalculator,
 	faSignOutAlt,
 	faUser,
@@ -15,14 +14,13 @@ import {
 	faArrowRight,
 } from '@fortawesome/free-solid-svg-icons'
 import Image from 'next/image'
-import { usePathname } from 'next/navigation' // Importujemy usePathname
+import { usePathname } from 'next/navigation' 
 import logo from '../../public/icon/logo.svg'
 import { signOut, useSession } from 'next-auth/react'
 
 const Sidebar = () => {
 	const currentYear = new Date().getFullYear()
-	const { isCollapsed, toggleSidebar } = useSidebar();
-
+	const { isCollapsed, toggleSidebar } = useSidebar()
 
 	const { data: session } = useSession()
 	const user = session?.user
@@ -70,7 +68,7 @@ const Sidebar = () => {
 					{ label: 'Wyszukiwarka danych', icon: faSearch, path: '/search-data' },
 					{ label: 'Analiza statystyczna', icon: faCalculator, path: '/stats-data' },
 					{ label: 'Wizualizacja danych', icon: faChartBar, path: '/charts' },
-					// { label: 'Raporty', icon: faFileAlt, path: '/raporty' },
+					{ label: 'Korelacja danych', icon: faLink, path: '/correlation' },
 				].map((item, index) => (
 					<a
 						key={index}
