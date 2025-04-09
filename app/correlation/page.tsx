@@ -4,6 +4,9 @@ import { useState, useEffect, useRef } from 'react'
 import PlatformSectionTitle from '@/components/UI/PlatformSectionTitle'
 import CorrelationForm from '@/components/Forms/CorrelationForm'
 import { useSidebar } from '@/components/contexts/SidebarProvider'
+import CorrelationChart from '@/components/Charts/CorrelationChart'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faLink } from '@fortawesome/free-solid-svg-icons'
 
 type City = {
 	id: number
@@ -24,23 +27,23 @@ type Column = {
 }
 
 const columnNameMap: { [key: string]: string } = {
-	maxTemperature: 'Maksymalna temperatura',
-	minTemperature: 'Minimalna temperatura',
-	maxFeelTemperature: 'Maksymalna odczuwalna temperatura',
-	minFeelTemperature: 'Minimalna odczuwalna temperatura',
-	totalPrecipitation: 'Całkowite opady',
-	rain: 'Deszcz',
-	rainSnow: 'Deszcz/Śnieg',
-	snow: 'Śnieg',
-	precipitationDuration: 'Czas opadów',
-	weatherCode: 'Kod pogody',
-	sunlightDuration: 'Czas nasłonecznienia',
-	daylightDuration: 'Czas światła dziennego',
-	maxWindSpeed: 'Maksymalna prędkość wiatru',
-	windGusts: 'Porywy wiatru',
-	dominantWindDirection: 'Dominujący kierunek wiatru',
-	totalSolarRadiation: 'Całkowite promieniowanie słoneczne',
-	evapotranspiration: 'Ewapotranspiracja',
+	maxTemperature: 'maksymalna temperatura',
+	minTemperature: 'minimalna temperatura',
+	maxFeelTemperature: 'maksymalna odczuwalna temperatura',
+	minFeelTemperature: 'minimalna odczuwalna temperatura',
+	totalPrecipitation: 'całkowite opady',
+	rain: 'deszcz',
+	rainSnow: 'deszcz/śnieg',
+	snow: 'śnieg',
+	precipitationDuration: 'czas opadów',
+	weatherCode: 'kod pogody',
+	sunlightDuration: 'czas nasłonecznienia',
+	daylightDuration: 'czas światła dziennego',
+	maxWindSpeed: 'maksymalna prędkość wiatru',
+	windGusts: 'porywy wiatru',
+	dominantWindDirection: 'dominujący kierunek wiatru',
+	totalSolarRadiation: 'całkowite promieniowanie słoneczne',
+	evapotranspiration: 'ewapotranspiracja',
 }
 
 const CorrelationPage = () => {
@@ -101,7 +104,7 @@ const CorrelationPage = () => {
 				column2: formData.column2,
 			})
 
-			const response = await fetch(`http://localhost:8080/api/weather/correlation?${queryParams}`)
+			const response = await fetch(`http://localhost:8080/api/correlation?${queryParams}`)
 			const data = await response.json()
 
 			setResult(data)
@@ -120,6 +123,114 @@ const CorrelationPage = () => {
 		}
 	}
 
+	const renderCorrelationResult = () => {
+		if (!result) return <div>Brak wyników korelacji</div>
+
+		const interpretCorrelation = (correlation: number) => {
+			if (correlation > 0.8)
+				return (
+					<p>
+						Współczynnik korelacji Pearsona na tym poziomie oznacza bardzo silną dodatnią zależność między zmiennymi.
+						Zmiany jednej zmiennej zazwyczaj powodują proporcjonalne zmiany drugiej w tym samym kierunku. Taka zależność
+						może być bardzo przydatna w przewidywaniu wartości.
+					</p>
+				)
+			if (correlation > 0.6)
+				return (
+					<p>
+						Współczynnik korelacji Pearsona na tym poziomie oznacza silną dodatnią zależność. Zmienne mają wyraźną
+						tendencję do zmiany w tym samym kierunku, choć nie zawsze w idealnym tempie.
+					</p>
+				)
+			if (correlation > 0.4)
+				return (
+					<p>
+						Współczynnik korelacji Pearsona na tym poziomie oznacza umiarkowaną dodatnią korelację. Zmienne są ze sobą
+						powiązane, ale zależność nie jest wystarczająco silna, by jednoznacznie przewidywać jedną zmienną na
+						podstawie drugiej.
+					</p>
+				)
+			if (correlation > 0.2)
+				return (
+					<p>
+						Współczynnik korelacji Pearsona na tym poziomie oznacza słabą dodatnią zależność. Istnieje tendencja do
+						wspólnego kierunku zmian, ale jest ona niewielka.
+					</p>
+				)
+			if (correlation > 0)
+				return (
+					<p>
+						Współczynnik korelacji Pearsona na tym poziomie oznacza bardzo słabą dodatnią korelację. Zależność między
+						zmiennymi jest minimalna i trudna do praktycznego wykorzystania.
+					</p>
+				)
+			if (correlation === 0)
+				return (
+					<p>
+						Współczynnik korelacji Pearsona na tym poziomie oznacza brak zależności między zmiennymi. Zmiana jednej nie
+						ma wpływu na zmianę drugiej.
+					</p>
+				)
+			if (correlation > -0.2)
+				return (
+					<p>
+						Współczynnik korelacji Pearsona na tym poziomie oznacza bardzo słabą ujemną korelację. Zależność jest
+						znikoma i nie pozwala wyciągać sensownych wniosków o kierunku zmian zmiennych.
+					</p>
+				)
+			if (correlation > -0.4)
+				return (
+					<p>
+						Współczynnik korelacji Pearsona na tym poziomie oznacza słabą ujemną zależność. Zmienne wykazują przeciwną
+						tendencję zmian, ale związek nie jest silny.
+					</p>
+				)
+			if (correlation > -0.6)
+				return (
+					<p>
+						Współczynnik korelacji Pearsona na tym poziomie oznacza umiarkowaną ujemną korelację. Zmienne mają tendencję
+						do zmiany w przeciwnych kierunkach w sposób zauważalny.
+					</p>
+				)
+			if (correlation > -0.8)
+				return (
+					<p>
+						Współczynnik korelacji Pearsona na tym poziomie oznacza silną ujemną zależność. Gdy jedna zmienna rośnie,
+						druga zazwyczaj maleje w sposób wyraźny.
+					</p>
+				)
+			return (
+				<p>
+					Współczynnik korelacji Pearsona na tym poziomie oznacza bardzo silną ujemną korelację. Zmienne są silnie
+					powiązane, ale zmieniają się w przeciwnych kierunkach — wzrost jednej wiąże się z istotnym spadkiem drugiej.
+				</p>
+			)
+		}
+
+		return (
+			<div
+				ref={resultRef}
+				className='bg-gray-900 p-4 sm:p-6 text-white rounded-xl shadow-lg w-full max-w-5xl mx-auto my-10'>
+				<div className='p-4 rounded-lg'>
+					<p className='font-semibold text-xl text-center'>
+						Korelacja między kolumnami {columnNameMap[result.column1]} a {columnNameMap[result.column2]}
+					</p>
+					<p className='flex flex-row items-center justify-center gap-2 text-lg my-4 uppercase text-center font-bold text-accentColor'>
+						<FontAwesomeIcon icon={faLink} className='text-3xl' /> Współczynnik korelacji Pearsona:{' '}
+						{result.correlation.toFixed(2)}
+					</p>
+					<div className='text-center my-6 text-sm font-thin'>{interpretCorrelation(result.correlation)}</div>
+					<CorrelationChart
+						column1={result.column1}
+						column2={result.column2}
+						values1={result.values1}
+						values2={result.values2}
+					/>
+				</div>
+			</div>
+		)
+	}
+
 	return (
 		<section className={sidebarContainer}>
 			<div className='flex flex-col justify-center items-center px-4 sm:px-6'>
@@ -131,20 +242,7 @@ const CorrelationPage = () => {
 					<CorrelationForm onSubmit={handleSubmit} cities={cities} columns={columns} />
 				</div>
 
-				<div ref={resultRef} className='mt-10'>
-					{isFormSubmitted && result && (
-						<div className='text-center bg-secondaryColor p-6 rounded-lg shadow-lg'>
-							<h3 className='text-xl font-bold mb-4'>Wynik korelacji</h3>
-							<p className='mb-2'>
-								📊 <strong>{result.column1}</strong> vs <strong>{result.column2}</strong>
-							</p>
-							<p className='text-lg'>
-								👉 Współczynnik korelacji:{' '}
-								<span className='font-bold text-accentColor'>{result.correlation.toFixed(4)}</span>
-							</p>
-						</div>
-					)}
-				</div>
+				{renderCorrelationResult()}
 			</div>
 		</section>
 	)
