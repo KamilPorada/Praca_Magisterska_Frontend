@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
 	faHome,
 	faChartBar,
+	faMap,
 	faSearch,
 	faLink,
 	faCalculator,
@@ -14,7 +15,7 @@ import {
 	faArrowRight,
 } from '@fortawesome/free-solid-svg-icons'
 import Image from 'next/image'
-import { usePathname } from 'next/navigation' 
+import { usePathname } from 'next/navigation'
 import logo from '../../public/icon/logo.svg'
 import { signOut, useSession } from 'next-auth/react'
 
@@ -68,6 +69,8 @@ const Sidebar = () => {
 					{ label: 'Wyszukiwarka danych', icon: faSearch, path: '/search-data' },
 					{ label: 'Analiza statystyczna', icon: faCalculator, path: '/stats-data' },
 					{ label: 'Wizualizacja danych', icon: faChartBar, path: '/charts' },
+					{ label: 'Wizualizacja na mapie', icon: faMap, path: '/maps' }, // ← NOWA OPCJA
+
 					{ label: 'Korelacja danych', icon: faLink, path: '/correlation' },
 				].map((item, index) => (
 					<a
