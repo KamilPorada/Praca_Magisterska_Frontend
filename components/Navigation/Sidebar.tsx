@@ -8,6 +8,7 @@ import {
 	faMap,
 	faSearch,
 	faLink,
+	faCity,
 	faCalculator,
 	faSignOutAlt,
 	faUser,
@@ -69,9 +70,9 @@ const Sidebar = () => {
 					{ label: 'Wyszukiwarka danych', icon: faSearch, path: '/search-data' },
 					{ label: 'Analiza statystyczna', icon: faCalculator, path: '/stats-data' },
 					{ label: 'Wizualizacja danych', icon: faChartBar, path: '/charts' },
-					{ label: 'Wizualizacja na mapie', icon: faMap, path: '/maps' }, // ← NOWA OPCJA
-
+					{ label: 'Wizualizacja na mapie', icon: faMap, path: '/maps' }, 
 					{ label: 'Korelacja danych', icon: faLink, path: '/correlation' },
+					{ label: 'Porównanie klimatu miast', icon: faCity, path: '/comparison' },
 				].map((item, index) => (
 					<a
 						key={index}

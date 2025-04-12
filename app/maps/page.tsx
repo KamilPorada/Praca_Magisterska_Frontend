@@ -43,8 +43,6 @@ type City = {
     latitude: number
   }
 
-
-
 const WeatherMap = () => {
     const [cities, setCities] = useState<City[]>([])
 	const [selectedDate, setSelectedDate] = useState<string | null>(null)
