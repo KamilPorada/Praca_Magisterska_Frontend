@@ -5,7 +5,21 @@ import PlatformSectionTitle from '@/components/UI/PlatformSectionTitle'
 import ComparisonForm from '@/components/Forms/ComparisonForm'
 import { useSidebar } from '@/components/contexts/SidebarProvider'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCity } from '@fortawesome/free-solid-svg-icons'
+import {
+	faAnglesRight,
+	faCity,
+	faCompass,
+	faDroplet,
+	faForward,
+	faHourglass,
+	faLeaf,
+	faMoon,
+	faSnowflake,
+	faSun,
+	faTemperatureEmpty,
+	faTemperatureFull,
+	faWind,
+} from '@fortawesome/free-solid-svg-icons'
 
 type WeatherData = {
 	id: number
@@ -185,6 +199,41 @@ const ComparisonPage = () => {
 			? weatherData2.find(item => formatDate(item.date) === formatDate(date))
 			: undefined
 
+		const isDaylightSavingTime = (date: Date) => {
+			// Funkcja do obliczania, czy data mieści się w okresie letnim (od ostatniej niedzieli marca do ostatniej niedzieli października)
+			const year = date.getFullYear()
+			const lastSundayMarch = new Date(year, 2, 31 - new Date(year, 2, 31).getDay()) // ostatnia niedziela marca
+			const lastSundayOctober = new Date(year, 9, 31 - new Date(year, 9, 31).getDay()) // ostatnia niedziela października
+
+			// Sprawdzamy, czy data mieści się pomiędzy ostatnią niedzielą marca a ostatnią niedzielą października
+			return date >= lastSundayMarch && date <= lastSundayOctober
+		}
+
+		const adjustSunTimeForDST = (time: string) => {
+			const date = new Date(time)
+			// Jeśli czas letni, dodajemy godzinę
+			if (isDaylightSavingTime(date)) {
+				date.setHours(date.getHours() + 1)
+			}
+			return date.toLocaleTimeString('pl-PL', {
+				hour: '2-digit',
+				minute: '2-digit',
+				hour12: false,
+			})
+		}
+
+		const formatSecondsToHoursMinutes = (seconds: number) => {
+			const hours = Math.floor(seconds / 3600)
+			const minutes = Math.floor((seconds % 3600) / 60)
+			return `${hours}h ${minutes}min`
+		}
+
+		const degreesToWindDirection = (degrees: number) => {
+			const windDirections = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW']
+			const index = Math.round(degrees / 45) % 8
+			return windDirections[index]
+		}
+
 		return (
 			<div ref={resultRef} className='bg-gray-900 text-white p-4 sm:p-6 rounded-xl shadow-lg w-full my-10'>
 				<h2 className='text-xl font-thin text-center mb-6'>
@@ -195,7 +244,7 @@ const ComparisonPage = () => {
 					<br />z dnia <span className='font-bold'>{date ? formatDate(date) : 'Brak daty'}</span>
 				</h2>
 
-				<div className='flex flex-row justify-center items-center gap-4'>
+				<div className='flex flex-row justify-center items-center gap-5'>
 					<div className='flex flex-col justify-center items-center relative bg-gray-800 rounded-xl shadow-md px-5 py-10 overflow-hidden'>
 						<div className='absolute top-0 w-full h-[5px] bg-mainColor'></div>
 						<div className='flex justify-center items-center w-[120px] h-[120px] bg-gray-300 [clip-path:polygon(30%_0%,_70%_0%,_100%_30%,_100%_70%,_70%_100%,_30%_100%,_0%_70%,_0%_30%)]'>
@@ -204,10 +253,10 @@ const ComparisonPage = () => {
 							</div>
 						</div>
 
-						<div className='flex flex-col justify-center items-center p-6 bg-slate-700 rounded-md ring-1 ring-gray-400'>
+						<div className='flex flex-col justify-center items-center py-6 pr-2 bg-slate-700 rounded-md ring-1 ring-gray-400'>
 							<p className='uppercase font-bold leading-3 text-lg'>{result.city1.name}</p>
 							<p className='lowercase font-thin'>{result.city1.voivodeship.name}</p>
-							<div className='flex flex-row justify-center items-center mt-2 gap-4 '>
+							<div className='flex flex-row justify-center items-center mt-2'>
 								<div className='flex flex-col justify-center items-center gap-2'>
 									<p className='-mb-3'>&nbsp;&nbsp;&nbsp;Populacja:&nbsp;&nbsp;&nbsp;</p>
 
@@ -224,6 +273,99 @@ const ComparisonPage = () => {
 								</div>
 							</div>
 						</div>
+						<div className='flex flex-row justify-evenly items-center w-full'>
+							<div className='flex flex-col justify-center items-center'>
+								<div className='w-2 h-4 ring-1 ring-gray-400 rounded-full'></div>
+								<div className='w-1 h-3 ring-1 ring-gray-400 rounded-full'></div>
+								<div className='w-2 h-4 ring-1 ring-gray-400 rounded-full'></div>
+								<div className='w-1 h-3 ring-1 ring-gray-400 rounded-full'></div>
+							</div>
+							<div className='flex flex-col justify-center items-center'>
+								<div className='w-2 h-4 ring-1 ring-gray-400 rounded-full'></div>
+								<div className='w-1 h-3 ring-1 ring-gray-400 rounded-full'></div>
+								<div className='w-2 h-4 ring-1 ring-gray-400 rounded-full'></div>
+								<div className='w-1 h-3 ring-1 ring-gray-400 rounded-full'></div>
+							</div>
+						</div>
+						<div className='flex flex-col justify-center items-center p-4 bg-slate-700 rounded-md ring-1 ring-gray-400 w-full'>
+							<div className='flex flex-row justify-between items-center border-b border-gray-400 w-full '>
+								<p className='text-xs font-thin'>Temperatura:</p>
+								<div className='flex flex-row justify-center items-center gap-2'>
+									<p className='text-sm'>
+										{selectedCityWeather1
+											? `${((selectedCityWeather1.maxTemperature + selectedCityWeather1.minTemperature) / 2).toFixed(
+													1
+											  )}°C`
+											: ''}
+									</p>
+									<p className='leading-4'>|</p>
+									<p>{result.comparison['maxTemperature']?.larger === result.city1.name ? '+' : '-'}</p>
+								</div>
+							</div>
+							<div className='flex flex-row justify-between items-center border-b border-gray-400 w-full'>
+								<p className='text-xs font-thin'>Opady deszczu:</p>
+								<div className='flex flex-row justify-center items-center gap-2'>
+									<p className='text-sm'>{selectedCityWeather1?.rain}mm</p>
+									<p className='leading-4'>|</p>
+									<p
+										className={`text-sm ${
+											result.comparison['rain']?.larger === result.city1.name ? 'text-green-500' : 'text-red-500'
+										}`}>
+										{result.comparison['rain']?.larger === result.city1.name
+											? '+' + result.comparison['rain'].difference.toFixed(1) + 'mm'
+											: '-' + result.comparison['rain'].difference.toFixed(1) + 'mm'}
+									</p>
+								</div>
+							</div>
+							<div className='flex flex-row justify-between items-center border-b border-gray-400 w-full'>
+								<p className='text-xs font-thin'>Opady śniegu:</p>
+								<p className='text-sm'>{selectedCityWeather1?.snow}mm</p>
+							</div>
+							<div className='flex flex-row justify-between items-center border-b border-gray-400 w-full'>
+								<p className='text-xs font-thin'>Czas trwania opadów:</p>
+								<p className='text-sm'>{selectedCityWeather1?.precipitationDuration}h</p>
+							</div>
+							<div className='flex flex-row justify-between items-center border-b border-gray-400 w-full'>
+								<p className='text-xs font-thin'>Wschód słońca:</p>
+								<p className='text-sm'>
+									{selectedCityWeather1?.sunrise ? adjustSunTimeForDST(selectedCityWeather1.sunrise) : ''}
+								</p>
+							</div>
+							<div className='flex flex-row justify-between items-center border-b border-gray-400 w-full'>
+								<p className='text-xs font-thin'>Zachód słońca:</p>
+								<p className='text-sm'>
+									{selectedCityWeather1?.sunset ? adjustSunTimeForDST(selectedCityWeather1.sunset) : ''}
+								</p>
+							</div>
+							<div className='flex flex-row justify-between items-center border-b border-gray-400 w-full'>
+								<p className='text-xs font-thin'>Czas nasłonecznienia:</p>
+								<p className='text-sm'>
+									{selectedCityWeather1?.sunlightDuration !== undefined
+										? formatSecondsToHoursMinutes(selectedCityWeather1.sunlightDuration)
+										: ''}
+								</p>
+							</div>
+							<div className='flex flex-row justify-between items-center border-b border-gray-400 w-full'>
+								<p className='text-xs font-thin'>Prędkość wiatru:</p>
+								<p className='text-sm'>{selectedCityWeather1?.maxWindSpeed}km/h</p>
+							</div>
+							<div className='flex flex-row justify-between items-center border-b border-gray-400 w-full'>
+								<p className='text-xs font-thin'>Kierunek wiatru:</p>
+								<p className='text-sm'>
+									{selectedCityWeather1?.dominantWindDirection !== undefined
+										? degreesToWindDirection(selectedCityWeather1.dominantWindDirection)
+										: ''}
+								</p>
+							</div>
+							<div className='flex flex-row justify-between items-center border-b border-gray-400 w-full'>
+								<p className='text-xs font-thin'>Promieniowanie słoneczne:</p>
+								<p className='text-sm'>{selectedCityWeather1?.totalSolarRadiation}MJ/m²</p>
+							</div>
+							<div className='flex flex-row justify-between items-center border-b border-gray-400 w-full'>
+								<p className='text-xs font-thin'>Ewapotranspiracja:</p>
+								<p className='text-sm'>{selectedCityWeather1?.evapotranspiration}mm</p>
+							</div>
+						</div>
 					</div>
 					<p className='text-7xl text-white'>vs.</p>
 					<div className='flex flex-col justify-center items-center relative bg-gray-800 rounded-xl shadow-md px-5 py-10 overflow-hidden'>
@@ -234,10 +376,10 @@ const ComparisonPage = () => {
 							</div>
 						</div>
 
-						<div className='flex flex-col justify-center items-center p-6 bg-slate-700 rounded-md ring-1 ring-gray-400'>
+						<div className='flex flex-col justify-center items-center py-6 pr-2 bg-slate-700 rounded-md ring-1 ring-gray-400'>
 							<p className='uppercase font-bold leading-3 text-lg'>{result.city2.name}</p>
 							<p className='lowercase font-thin'>{result.city2.voivodeship.name}</p>
-							<div className='flex flex-row justify-center items-center mt-2 gap-4 '>
+							<div className='flex flex-row justify-center items-center mt-2'>
 								<div className='flex flex-col justify-center items-center gap-2'>
 									<p className='-mb-3'>&nbsp;&nbsp;&nbsp;Populacja:&nbsp;&nbsp;&nbsp;</p>
 
@@ -252,6 +394,93 @@ const ComparisonPage = () => {
 									<p className='-mb-3'>Powierzchnia:</p>
 									<p className='font-thin text-sm'>{result.city2.area} km²</p>
 								</div>
+							</div>
+						</div>
+						<div className='flex flex-row justify-center items-center gap-16 w-full'>
+							<div className='flex flex-col justify-center items-center'>
+								<div className='w-2 h-4 ring-1 ring-gray-400 rounded-full'></div>
+								<div className='w-1 h-3 ring-1 ring-gray-400 rounded-full'></div>
+								<div className='w-2 h-4 ring-1 ring-gray-400 rounded-full'></div>
+								<div className='w-1 h-3 ring-1 ring-gray-400 rounded-full'></div>
+							</div>
+							<div className='flex flex-col justify-center items-center'>
+								<div className='w-2 h-4 ring-1 ring-gray-400 rounded-full'></div>
+								<div className='w-1 h-3 ring-1 ring-gray-400 rounded-full'></div>
+								<div className='w-2 h-4 ring-1 ring-gray-400 rounded-full'></div>
+								<div className='w-1 h-3 ring-1 ring-gray-400 rounded-full'></div>
+							</div>
+						</div>
+						<div className='flex flex-col justify-center items-center p-6 bg-slate-700 rounded-md ring-1 ring-gray-400'>
+							<div className='flex flex-row justify-between items-center border-b border-gray-400 p-1 w-40'>
+								<FontAwesomeIcon icon={faTemperatureEmpty} className='text-2xl text-red-500 drop-shadow-md' />
+								<p className='text-sm'>
+									{selectedCityWeather2
+										? `${((selectedCityWeather2.maxTemperature + selectedCityWeather2.minTemperature) / 2).toFixed(
+												1
+										  )}°C`
+										: ''}
+								</p>
+							</div>
+							<div className='flex flex-row justify-between items-center border-b border-gray-400 p-1 w-40'>
+								<FontAwesomeIcon icon={faDroplet} className='text-xl text-blue-400 drop-shadow-md' />
+								<p className='text-sm'>{selectedCityWeather2?.rain}mm</p>
+							</div>
+							<div className='flex flex-row justify-between items-center border-b border-gray-400 p-1 w-40'>
+								<FontAwesomeIcon icon={faSnowflake} className='text-xl text-cyan-300 drop-shadow-md' />
+								<p className='text-sm'>{selectedCityWeather2?.snow}mm</p>
+							</div>
+							<div className='flex flex-row justify-between items-center border-b border-gray-400 p-1 w-40'>
+								<div className='flex flex-row justify-center items-start'>
+									<FontAwesomeIcon icon={faHourglass} className='text-lg text-yellow-700 drop-shadow-md' />
+									<FontAwesomeIcon icon={faDroplet} className='text-xs text-blue-400 drop-shadow-md' />
+								</div>
+								<p className='text-sm'>{selectedCityWeather2?.precipitationDuration}h</p>
+							</div>
+							<div className='flex flex-row justify-between items-center border-b border-gray-400 p-1 w-40'>
+								<FontAwesomeIcon icon={faSun} className='text-xl text-yellow-300 drop-shadow-md' />
+								<p className='text-sm'>
+									{selectedCityWeather2?.sunrise ? adjustSunTimeForDST(selectedCityWeather2.sunrise) : ''}
+								</p>
+							</div>
+							<div className='flex flex-row justify-between items-center border-b border-gray-400 p-1 w-40'>
+								<FontAwesomeIcon icon={faMoon} className='text-xl text-indigo-200 drop-shadow-md' />
+								<p className='text-sm'>
+									{selectedCityWeather2?.sunset ? adjustSunTimeForDST(selectedCityWeather2.sunset) : ''}
+								</p>
+							</div>
+							<div className='flex flex-row justify-between items-center border-b border-gray-400 p-1 w-40'>
+								<div className='flex flex-row justify-center items-start'>
+									<FontAwesomeIcon icon={faHourglass} className='text-lg text-yellow-700 drop-shadow-md' />
+									<FontAwesomeIcon icon={faSun} className='text-xs text-amber-300 drop-shadow-md' />
+								</div>
+								<p className='text-sm'>
+									{selectedCityWeather2?.sunlightDuration !== undefined
+										? formatSecondsToHoursMinutes(selectedCityWeather2.sunlightDuration)
+										: ''}
+								</p>
+							</div>
+							<div className='flex flex-row justify-between items-center border-b border-gray-400 p-1 w-40'>
+								<FontAwesomeIcon icon={faWind} className='text-xl text-sky-400 drop-shadow-md' />
+								<p className='text-sm'>{selectedCityWeather2?.maxWindSpeed}km/h</p>
+							</div>
+							<div className='flex flex-row justify-between items-center border-b border-gray-400 p-1 w-40'>
+								<FontAwesomeIcon icon={faCompass} className='text-xl text-slate-400 drop-shadow-md' />
+								<p className='text-sm'>
+									{selectedCityWeather2?.dominantWindDirection !== undefined
+										? degreesToWindDirection(selectedCityWeather2.dominantWindDirection)
+										: ''}
+								</p>
+							</div>
+							<div className='flex flex-row justify-between items-center border-b border-gray-400 p-1 w-40'>
+								<div className='flex flex-row justify-center items-end'>
+									<FontAwesomeIcon icon={faSun} className='text-lg text-amber-300 drop-shadow-md' />
+									<FontAwesomeIcon icon={faAnglesRight} className='text-xs rotate-12 text-yellow-100 drop-shadow-md' />
+								</div>
+								<p className='text-sm'>{selectedCityWeather2?.totalSolarRadiation}MJ/m²</p>
+							</div>
+							<div className='flex flex-row justify-between items-center border-b border-gray-400 p-1 w-40'>
+								<FontAwesomeIcon icon={faLeaf} className='text-xl text-green-400 drop-shadow-md' />
+								<p className='text-sm'>{selectedCityWeather2?.evapotranspiration}mm</p>
 							</div>
 						</div>
 					</div>
