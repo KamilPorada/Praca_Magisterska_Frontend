@@ -246,6 +246,7 @@ const ComparisonPage = () => {
 							</div>
 						</div>
 						<div className='flex flex-col justify-center items-center p-2 lg:p-4 bg-slate-700 rounded-md ring-1 ring-gray-400 w-full'>
+							<p className='mb-2 font-thin uppercase text-sm'>Warunki pogodowe</p>
 							<div className='flex flex-row justify-between items-center border-b border-gray-400 w-full '>
 								<p className='text-[10px] lg:text-xs lg:font-thin'>Temperatura:</p>
 								<div className='flex flex-row justify-between items-center w-[170px] lg:w-[200px]'>
@@ -683,6 +684,8 @@ const ComparisonPage = () => {
 							</div>
 						</div>
 						<div className='flex flex-col justify-center items-center p-2 lg:p-4 bg-slate-700 rounded-md ring-1 ring-gray-400 w-full'>
+						<p className='mb-2 font-thin uppercase text-sm'>Warunki pogodowe</p>
+
 							<div className='flex flex-row justify-between items-center border-b border-gray-400 w-full '>
 								<p className='text-[10px] lg:text-xs lg:font-thin'>Temperatura:</p>
 								<div className='flex flex-row justify-between items-center w-[170px] lg:w-[200px]'>

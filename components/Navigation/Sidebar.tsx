@@ -14,6 +14,7 @@ import {
 	faUser,
 	faArrowLeft,
 	faArrowRight,
+	faGlobe
 } from '@fortawesome/free-solid-svg-icons'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
@@ -73,6 +74,7 @@ const Sidebar = () => {
 					{ label: 'Wizualizacja na mapie', icon: faMap, path: '/maps' }, 
 					{ label: 'Korelacja danych', icon: faLink, path: '/correlation' },
 					{ label: 'Porównanie klimatu miast', icon: faCity, path: '/comparison' },
+					{ label: 'Zmiany klimatyczne', icon: faGlobe, path: '/change-climate' },
 				].map((item, index) => (
 					<a
 						key={index}
