@@ -88,7 +88,7 @@ const ClimatePredictionPage = () => {
 			setTimeout(() => {
 				resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 				setTimeout(() => {
-					window.scrollBy({ top: 150, left: 0, behavior: 'smooth' })
+					window.scrollBy({ top: 80, left: 0, behavior: 'smooth' })
 				}, 300)
 			}, 300)
 		} catch (error) {
@@ -102,7 +102,7 @@ const ClimatePredictionPage = () => {
 
 	const renderClimatePredictionResult = () => {
 		if (!predictionResult || predictionResult.length === 0) {
-			return <div>Brak wyników prognozy</div>
+			return 
 		}
 
 		// Przekształcamy dane na wykresy
@@ -162,78 +162,202 @@ const ClimatePredictionPage = () => {
 			const past = predictionResult.filter(r => r.year <= 2025)
 			const future = predictionResult.filter(r => r.year >= 2025)
 
-			const hottest = past.reduce((a, b) => (b.averageTemperature > a.averageTemperature ? b : a))
-			const coldest = past.reduce((a, b) => (b.averageTemperature < a.averageTemperature ? b : a))
+			const hottestPast = past.reduce((a, b) => (b.averageTemperature > a.averageTemperature ? b : a))
+			const coldestPast = past.reduce((a, b) => (b.averageTemperature < a.averageTemperature ? b : a))
+			const hottestFuture = future.reduce((a, b) => (b.averageTemperature > a.averageTemperature ? b : a))
+			const coldestFuture = future.reduce((a, b) => (b.averageTemperature < a.averageTemperature ? b : a))
 
-			const startYear = predictionResult.find(r => r.year === 2025)
-			const endYear = predictionResult.find(r => r.year === 2100)
-			const tempDiff =
-				startYear && endYear ? (endYear.averageTemperature - startYear.averageTemperature).toFixed(2) : '—'
+			const startPast = past.find(r => r.year === 1950)
+			const endPast = past.find(r => r.year === 2025)
+			const startFuture = future.find(r => r.year === 2025)
+			const endFuture = future.find(r => r.year === 2100)
 
-			const growDays = future.map(r => r.estimatedGrowingSeasonDays)
-			const minDays = Math.min(...growDays)
-			const maxDays = Math.max(...growDays)
+			const tempDiffPast =
+				hottestPast && coldestPast ? (hottestPast.averageTemperature - coldestPast.averageTemperature).toFixed(2) : '—'
+
+			const tempDiffFuture =
+				hottestFuture && coldestFuture
+					? (hottestFuture.averageTemperature - coldestFuture.averageTemperature).toFixed(2)
+					: '—'
+
+			const growDaysPast = past.map(r => r.estimatedGrowingSeasonDays)
+			const growDaysFuture = future.map(r => r.estimatedGrowingSeasonDays)
+
+			const minDaysPast = Math.min(...growDaysPast)
+			const maxDaysPast = Math.max(...growDaysPast)
+			const minDaysFuture = Math.min(...growDaysFuture)
+			const maxDaysFuture = Math.max(...growDaysFuture)
 
 			return [
+				// Najcieplejszy rok
 				{
-					title: 'Najcieplejszy rok (1950–2025)',
-					value: `${hottest.year}: ${hottest.averageTemperature.toFixed(2)}°C`,
+					title: 'Najcieplejszy rok',
+					value: `${hottestPast.year}: ${hottestPast.averageTemperature.toFixed(2)}°C`,
 					subtext: 'Na podstawie danych historycznych',
 					icon: faSun,
-					color: 'bg-yellow-500',
+					color: 'bg-yellow-400',
 				},
 				{
-					title: 'Najzimniejszy rok (1950–2025)',
-					value: `${coldest.year}: ${coldest.averageTemperature.toFixed(2)}°C`,
+					title: 'Najcieplejszy rok',
+					value: `${hottestFuture.year}: ${hottestFuture.averageTemperature.toFixed(2)}°C`,
+					subtext: 'Na podstawie danych prognozowanych',
+					icon: faSun,
+					color: 'bg-yellow-600',
+				},
+
+				// Najzimniejszy rok
+				{
+					title: 'Najzimniejszy rok',
+					value: `${coldestPast.year}: ${coldestPast.averageTemperature.toFixed(2)}°C`,
 					subtext: 'Na podstawie danych historycznych',
 					icon: faSnowflake,
 					color: 'bg-blue-400',
 				},
 				{
-					title: 'Wzrost średniej temp. do 2100',
-					value: `${tempDiff}°C`,
-					subtext: 'Różnica między 2025 a 2100',
+					title: 'Najzimniejszy rok',
+					value: `${coldestFuture.year}: ${coldestFuture.averageTemperature.toFixed(2)}°C`,
+					subtext: 'Na podstawie danych prognozowanych',
+					icon: faSnowflake,
+					color: 'bg-blue-700',
+				},
+
+				// Wzrost temperatury
+				{
+					title: 'Wzrost średniej temperatury',
+					value: `${tempDiffPast}°C`,
+					subtext: 'Na podstawie danych historycznych',
 					icon: faArrowUp,
-					color: 'bg-red-500',
+					color: 'bg-red-600',
 				},
 				{
-					title: 'Zakres dni wegetacyjnych (prognoza)',
-					value: `${minDays} – ${maxDays} dni`,
-					subtext: 'Lata 2025–2100',
+					title: 'Wzrost średniej temperatury',
+					value: `${tempDiffFuture}°C`,
+					subtext: 'Na podstawie danych prognozowanych',
+					icon: faArrowUp,
+					color: 'bg-red-800',
+				},
+
+				// Liczba dni okresu wegetacyjnego
+				{
+					title: 'Zakres dni wegetacyjnych',
+					value: `${minDaysPast} dni / ${maxDaysPast} dni`,
+					subtext: 'Na podstawie danych historycznych',
 					icon: faSeedling,
 					color: 'bg-green-500',
+				},
+				{
+					title: 'Zakres dni wegetacyjnych',
+					value: `${minDaysFuture} dni / ${maxDaysFuture} dni`,
+					subtext: 'Na podstawie danych prognozowanych',
+					icon: faSeedling,
+					color: 'bg-green-700',
 				},
 			]
 		})()
 
 		return (
 			<>
-				<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6'>
-					{statsData.map((item, index) => (
-						<motion.div
-							key={index}
-							className='p-3 sm:p-4 bg-gray-800 rounded-xl shadow-md flex flex-col items-start space-y-2'
-							initial={{ opacity: 0, y: 20 }}
-							animate={{ opacity: 1, y: 0 }}
-							transition={{ delay: index * 0.1, duration: 0.5 }}>
-							<div className='flex items-center space-x-3 sm:space-x-4 h-20 sm:h-24 w-full'>
-								<div
-									className={`w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center ${item.color} rounded-full text-white`}>
-									<FontAwesomeIcon icon={item.icon} className='text-xl sm:text-2xl' />
+				<div className='bg-gray-900 p-4 sm:p-6 rounded-xl shadow-lg w-full max-w-5xl mx-auto my-5' ref={resultRef}>
+					<h2 className='text-xl font-semibold text-center mb-6'>
+						Analiza statystyczna danych historycznych oraz
+						<br />
+						prognozowanych zmian klimatycznych dla miasta {cityName}
+					</h2>
+					<div className='grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6'>
+						{statsData.map((item, index) => (
+							<motion.div
+								key={index}
+								className='p-3 sm:p-4 bg-gray-800 rounded-xl shadow-md flex flex-col items-start space-y-2'
+								initial={{ opacity: 0, y: 20 }}
+								animate={{ opacity: 1, y: 0 }}
+								transition={{ delay: index * 0.1, duration: 0.5 }}>
+								<div className='flex items-center space-x-3 sm:space-x-4 h-20 sm:h-24 w-full'>
+									<div
+										className={`w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center ${item.color} rounded-full text-white`}>
+										<FontAwesomeIcon icon={item.icon} className='text-xl sm:text-2xl' />
+									</div>
+									<div className='w-4/5'>
+										<h3 className='text-base sm:text-lg font-semibold'>{item.title}</h3>
+										<p className='text-lg sm:text-xl font-bold'>{item.value}</p>
+									</div>
 								</div>
-								<div className='w-4/5'>
-									<h3 className='text-base sm:text-lg font-semibold'>{item.title}</h3>
-									<p className='text-lg sm:text-xl font-bold'>{item.value}</p>
-								</div>
-							</div>
-							{item.subtext && <p className='text-xs sm:text-sm text-gray-300'>{item.subtext}</p>}
-						</motion.div>
-					))}
+								{item.subtext && <p className='text-xs sm:text-sm text-gray-300'>{item.subtext}</p>}
+							</motion.div>
+						))}
+					</div>
+				</div>
+
+				{/* Wykresy */}
+				<div className='bg-gray-900 p-4 sm:p-6 text-white rounded-xl shadow-lg w-full max-w-5xl mx-auto my-5'>
+					<h3 className='text-lg text-center mb-4'>Prognozowane zmiany temperatury</h3>
+					<div className='overflow-x-auto'>
+						<div className='min-w-[600px]'>
+							<Line
+								data={temperatureChartData}
+								options={{
+									scales: {
+										x: {
+											ticks: {
+												color: 'white',
+												font: { weight: 'lighter' },
+											},
+											grid: { color: '#444444' },
+										},
+										y: {
+											ticks: {
+												color: 'white',
+												font: { weight: 'lighter' },
+											},
+											grid: { color: '#444444' },
+										},
+									},
+									plugins: {
+										legend: {
+											labels: { color: 'white' },
+										},
+									},
+								}}
+							/>
+						</div>
+					</div>
+				</div>
+
+				<div className='bg-gray-900 p-4 sm:p-6 text-white rounded-xl shadow-lg w-full max-w-5xl mx-auto my-5'>
+					<h3 className='text-lg text-center mb-4'>Prognozowana liczba dni okresu wegetacyjnego</h3>
+					<div className='overflow-x-auto'>
+						<div className='min-w-[600px]'>
+							<Bar
+								data={growingSeasonChartData}
+								options={{
+									scales: {
+										x: {
+											ticks: {
+												color: 'white',
+												font: { weight: 'lighter' },
+											},
+											grid: { color: '#444444' },
+										},
+										y: {
+											ticks: {
+												color: 'white',
+												font: { weight: 'lighter' },
+											},
+											grid: { color: '#444444' },
+										},
+									},
+									plugins: {
+										legend: {
+											labels: { color: 'white' },
+										},
+									},
+								}}
+							/>
+						</div>
+					</div>
 				</div>
 
 				<div
-					ref={resultRef}
-					className='bg-gray-900 p-4 sm:p-6 text-white rounded-xl shadow-lg w-full max-w-5xl mx-auto my-10'>
+					className='bg-gray-900 p-4 sm:p-6 text-white rounded-xl shadow-lg w-full max-w-5xl mx-auto my-5'>
 					<h2 className='text-xl font-semibold text-center mb-6'>
 						Historyczne dane meteorologiczne oraz
 						<br />
@@ -267,86 +391,6 @@ const ClimatePredictionPage = () => {
 							</tbody>
 						</table>
 					</div>
-				</div>
-
-				{/* Wykresy */}
-				<div className='bg-gray-900 p-4 sm:p-6 text-white rounded-xl shadow-lg w-full max-w-5xl mx-auto my-10'>
-					<h3 className='text-lg text-center mb-4'>Prognozowane zmiany temperatury</h3>
-					<Line
-						data={temperatureChartData}
-						options={{
-							scales: {
-								x: {
-									ticks: {
-										color: 'white', // Kolor tekstu na osi X
-										font: {
-											weight: 'lighter', // Cieńsza czcionka
-										},
-									},
-									grid: {
-										color: '#444444', // Kolor siatki na osi X
-									},
-								},
-								y: {
-									ticks: {
-										color: 'white', // Kolor tekstu na osi Y
-										font: {
-											weight: 'lighter', // Cieńsza czcionka
-										},
-									},
-									grid: {
-										color: '#444444', // Kolor siatki na osi Y
-									},
-								},
-							},
-							plugins: {
-								legend: {
-									labels: {
-										color: 'white', // Kolor legendy
-									},
-								},
-							},
-						}}
-					/>
-				</div>
-				<div className='bg-gray-900 p-4 sm:p-6 text-white rounded-xl shadow-lg w-full max-w-5xl mx-auto my-10'>
-					<h3 className='text-lg text-center mb-4'>Prognozowana liczba dni okresu wegetacyjnego</h3>
-					<Bar
-						data={growingSeasonChartData}
-						options={{
-							scales: {
-								x: {
-									ticks: {
-										color: 'white', // Kolor tekstu na osi X
-										font: {
-											weight: 'lighter', // Cieńsza czcionka
-										},
-									},
-									grid: {
-										color: '#444444', // Kolor siatki na osi X
-									},
-								},
-								y: {
-									ticks: {
-										color: 'white', // Kolor tekstu na osi Y
-										font: {
-											weight: 'lighter', // Cieńsza czcionka
-										},
-									},
-									grid: {
-										color: '#444444', // Kolor siatki na osi Y
-									},
-								},
-							},
-							plugins: {
-								legend: {
-									labels: {
-										color: 'white', // Kolor legendy
-									},
-								},
-							},
-						}}
-					/>
 				</div>
 			</>
 		)
