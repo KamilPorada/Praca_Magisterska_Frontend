@@ -1,4 +1,4 @@
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts'
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend, PieLabelRenderProps } from 'recharts'
 
 type DailyWeatherData = {
 	id: number
@@ -68,12 +68,26 @@ type ChartProps = {
 	data: WeatherData[]
 }
 
+// Własna funkcja do renderowania etykiety procentowej
+const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: PieLabelRenderProps) => {
+	if (percent == null) return null
+
+	const RADIAN = Math.PI / 180
+	const radius = Number(innerRadius) + (Number(outerRadius) - Number(innerRadius)) * 0.5
+	const x = Number(cx) + radius * Math.cos(-midAngle * RADIAN)
+	const y = Number(cy) + radius * Math.sin(-midAngle * RADIAN)
+
+	return (
+		<text x={x} y={y} fill='white' textAnchor='middle' dominantBaseline='central' fontSize={14}>
+			{`${(percent * 100).toFixed(0)}%`}
+		</text>
+	)
+}
+
 const PrecipitationChart: React.FC<ChartProps> = ({ data }) => {
-	// Sumowanie wartości opadów
 	const totalRain = data.reduce((sum, item) => sum + (item.rain || 0), 0)
 	const totalSnow = data.reduce((sum, item) => sum + (item.snow || 0), 0)
 
-	// Dane do wykresu (dodajemy tylko wartości > 0)
 	const chartData = [
 		{ name: 'Deszcz', value: totalRain, color: '#1E90FF' },
 		{ name: 'Śnieg', value: totalSnow, color: '#ADD8E6' },
@@ -91,21 +105,22 @@ const PrecipitationChart: React.FC<ChartProps> = ({ data }) => {
 						cx='50%'
 						cy='50%'
 						outerRadius='80%'
-						label={({ name, percent }) => `${(percent * 100).toFixed(1)}%`}>
+						labelLine={false}
+						label={renderCustomizedLabel}>
 						{chartData.map((entry, index) => (
 							<Cell key={`cell-${index}`} fill={entry.color} />
 						))}
 					</Pie>
 					<Tooltip
 						contentStyle={{
-							backgroundColor: '#1e202c', // ciemne tło
-							borderColor: '#1e202c', // ciemna ramka
-							color: '#fff', // biały tekst
+							backgroundColor: '#1e202c',
+							borderColor: '#1e202c',
+							color: '#fff',
 							fontSize: '0.8rem',
 						}}
-						labelStyle={{ color: '#fff' }} // kolor etykiety
-						itemStyle={{ color: '#fff' }} // biały tekst dla wartości w tooltipie
-						formatter={(value: any) => `${value.toFixed(2)}mm`} // Zaokrąglanie do 2 miejsc po przecinku i dodanie stopni C
+						labelStyle={{ color: '#fff' }}
+						itemStyle={{ color: '#fff' }}
+						formatter={(value: any) => `${value.toFixed(2)}mm`}
 					/>
 					<Legend
 						verticalAlign='bottom'

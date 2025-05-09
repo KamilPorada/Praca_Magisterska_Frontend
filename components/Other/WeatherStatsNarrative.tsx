@@ -67,10 +67,26 @@ const WeatherStatsNarrative = ({ stats, formData }: { stats: WeatherStats; formD
 		return `${h}h ${m}m`
 	}
 
-	const formatStringTime = (isoString: string) => {
-		return new Date(isoString).toLocaleTimeString('pl-PL', {
+	const isDaylightSavingTime = (date: Date) => {
+		// Funkcja do obliczania, czy data mieści się w okresie letnim (od ostatniej niedzieli marca do ostatniej niedzieli października)
+		const year = date.getFullYear()
+		const lastSundayMarch = new Date(year, 2, 31 - new Date(year, 2, 31).getDay()) // ostatnia niedziela marca
+		const lastSundayOctober = new Date(year, 9, 31 - new Date(year, 9, 31).getDay()) // ostatnia niedziela października
+	
+		// Sprawdzamy, czy data mieści się pomiędzy ostatnią niedzielą marca a ostatnią niedzielą października
+		return date >= lastSundayMarch && date <= lastSundayOctober
+	}
+
+	const adjustSunTimeForDST = (time: string) => {
+		const date = new Date(time)
+		// Jeśli czas letni, dodajemy godzinę
+		if (isDaylightSavingTime(date)) {
+			date.setHours(date.getHours() + 1)
+		}
+		return date.toLocaleTimeString('pl-PL', {
 			hour: '2-digit',
 			minute: '2-digit',
+			hour12: false,
 		})
 	}
 
@@ -127,12 +143,12 @@ const WeatherStatsNarrative = ({ stats, formData }: { stats: WeatherStats; formD
 			icon: faSun,
 			color: 'bg-orange-500',
 			title: 'Wschód słońca',
-			value: `${formatStringTime(stats.sunrise.latest)} - ${formatStringTime(stats.sunrise.earliest)}`,
+			value: `${adjustSunTimeForDST(stats.sunrise.latest)} - ${adjustSunTimeForDST(stats.sunrise.earliest)}`,
 			subtext: (
 				<>
 					Najwcześniejszy wschód słońca miał miejsce o{' '}
-					<span className='font-semibold'>{formatStringTime(stats.sunrise.latest)}</span>, a najpóźniejszy o{' '}
-					<span className='font-semibold'>{formatStringTime(stats.sunrise.earliest)}</span>.
+					<span className='font-semibold'>{adjustSunTimeForDST(stats.sunrise.latest)}</span>, a najpóźniejszy o{' '}
+					<span className='font-semibold'>{adjustSunTimeForDST(stats.sunrise.earliest)}</span>.
 				</>
 			),
 		},
@@ -140,12 +156,12 @@ const WeatherStatsNarrative = ({ stats, formData }: { stats: WeatherStats; formD
 			icon: faMoon,
 			color: 'bg-indigo-600',
 			title: 'Zachód słońca',
-			value: `${formatStringTime(stats.sunset.earliest)} - ${formatStringTime(stats.sunset.latest)}`,
+			value: `${adjustSunTimeForDST(stats.sunset.earliest)} - ${adjustSunTimeForDST(stats.sunset.latest)}`,
 			subtext: (
 				<>
 					Najwcześniejszy zachód słońca miał miejsce o{' '}
-					<span className='font-semibold'>{formatStringTime(stats.sunset.earliest)}</span>, a najpóźniejszy o{' '}
-					<span className='font-semibold'>{formatStringTime(stats.sunset.latest)}</span>.
+					<span className='font-semibold'>{adjustSunTimeForDST(stats.sunset.earliest)}</span>, a najpóźniejszy o{' '}
+					<span className='font-semibold'>{adjustSunTimeForDST(stats.sunset.latest)}</span>.
 				</>
 			),
 		},
