@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Button from '../UI/Button'
 
 type City = {
@@ -22,6 +22,7 @@ const MAX_DATE = '2024-12-31'
 
 const CorrelationForm: React.FC<CorrelationFormProps> = ({ cities, columns, onSubmit }) => {
 	const [selectedCity, setSelectedCity] = useState<number | undefined>(cities[0]?.id)
+	const [cityName, setCityName] = useState<string>('')
 	const [startDate, setStartDate] = useState('')
 	const [endDate, setEndDate] = useState('')
 	const [column1, setColumn1] = useState('')
@@ -76,6 +77,20 @@ const CorrelationForm: React.FC<CorrelationFormProps> = ({ cities, columns, onSu
 			column2,
 		})
 	}
+
+	useEffect(() => {
+		if (cities.length > 0) {
+			setSelectedCity(cities[0].id)
+			setCityName(cities[0].name)
+		}
+	}, [cities])
+
+	useEffect(() => {
+		const city = cities.find(city => city.id === selectedCity)
+		if (city) {
+			setCityName(city.name)
+		}
+	}, [selectedCity, cities])
 
 	return (
 		<form onSubmit={handleSubmit} className='w-full'>

@@ -16,17 +16,35 @@ const DailyWeatherDataForm: React.FC<DailyWeatherDataFormProps> = ({ cities, onD
 	const [cityName, setCityName] = useState<string>('')
 	const [startDate, setStartDate] = useState<string>('')
 	const [endDate, setEndDate] = useState<string>('')
-	const [errors, setErrors] = useState<{ city?: boolean; startDate?: boolean; endDate?: boolean }>({})
-	const [dataFetched, setDataFetched] = useState<boolean>(false) // New state to track if data is fetched
+	const [errors, setErrors] = useState<{ city?: boolean; startDate?: string; endDate?: string }>({})
+	const [dataFetched, setDataFetched] = useState<boolean>(false)
+
+	const MIN_DATE = '1940-01-01'
+	const MAX_DATE = '2024-12-31'
 
 	const validateForm = () => {
-		const newErrors = {
-			city: !selectedCity,
-			startDate: !startDate,
-			endDate: !endDate,
+		const newErrors: { city?: boolean; startDate?: string; endDate?: string } = {}
+
+		if (!selectedCity) {
+			newErrors.city = true
 		}
+
+		if (!startDate) {
+			newErrors.startDate = 'Wybierz datę początkową.'
+		} else if (startDate < MIN_DATE || startDate > MAX_DATE) {
+			newErrors.startDate = `Data musi być między ${MIN_DATE} a ${MAX_DATE}.`
+		}
+
+		if (!endDate) {
+			newErrors.endDate = 'Wybierz datę końcową.'
+		} else if (endDate < MIN_DATE || endDate > MAX_DATE) {
+			newErrors.endDate = `Data musi być między ${MIN_DATE} a ${MAX_DATE}.`
+		} else if (startDate && endDate < startDate) {
+			newErrors.endDate = 'Data końcowa nie może być wcześniejsza niż początkowa.'
+		}
+
 		setErrors(newErrors)
-		return !Object.values(newErrors).some(Boolean)
+		return Object.keys(newErrors).length === 0
 	}
 
 	const handleSubmit = async (e: React.FormEvent) => {
@@ -88,6 +106,7 @@ const DailyWeatherDataForm: React.FC<DailyWeatherDataFormProps> = ({ cities, onD
 							</option>
 						))}
 					</select>
+					{errors.city && <p className='text-red-500 text-sm mt-1'>Wybierz miasto.</p>}
 				</div>
 
 				<div className='mb-4'>
@@ -103,6 +122,7 @@ const DailyWeatherDataForm: React.FC<DailyWeatherDataFormProps> = ({ cities, onD
 							errors.startDate ? 'border-red-500 border-2' : 'border-gray-300'
 						} rounded-md`}
 					/>
+					{errors.startDate && <p className='text-red-500 text-sm mt-1'>{errors.startDate}</p>}
 				</div>
 
 				<div className='mb-4'>
@@ -118,6 +138,7 @@ const DailyWeatherDataForm: React.FC<DailyWeatherDataFormProps> = ({ cities, onD
 							errors.endDate ? 'border-red-500 border-2' : 'border-gray-300'
 						} rounded-md`}
 					/>
+					{errors.endDate && <p className='text-red-500 text-sm mt-1'>{errors.endDate}</p>}
 				</div>
 				<Button className='w-full mt-2'>Wczytaj dane </Button>
 			</form>

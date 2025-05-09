@@ -30,13 +30,14 @@ const MonthlyWeatherDataForm: React.FC<MonthlyWeatherDataFormProps> = ({ cities,
 		'kwietnia',
 		'maja',
 		'czerwca',
-		'lipieca',
+		'lipca',
 		'sierpnia',
 		'września',
 		'października',
 		'listopada',
 		'grudnia',
 	]
+	
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()

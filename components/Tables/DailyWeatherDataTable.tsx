@@ -69,64 +69,64 @@ const DailyWeatherDataTable: React.FC<DailyWeatherDataTableProps> = ({ dailyData
 
 	return (
 		<div className='flex flex-col justify-center items-center mt-4'>
-			<div className='w-[270px] sm:w-[420px] md:w-[630px] lg:w-[820px] xl:w-[1050px] overflow-x-auto shadow-md rounded-lg'>
-				<table className='bg-white text-sm text-left text-gray-800'>
-					<thead className='bg-mainColor text-white text-center'>
-						<tr>
-							<th className='px-6 py-2 border-b'>L.P.</th>
-							<th className='px-14 py-2 border-b'>Data</th>
-							<th className='px-6 py-2 border-b'>Maksymalna temperatura (°C)</th>
-							<th className='px-6 py-2 border-b'>Minimalna temperatura (°C)</th>
-							<th className='px-6 py-2 border-b'>Maksymalna odczuwalna temperatura (°C)</th>
-							<th className='px-6 py-2 border-b'>Minimalna odczuwalna temperatura (°C)</th>
-							<th className='px-6 py-2 border-b'>Całkowite opady (mm)</th>
-							<th className='px-6 py-2 border-b'>Deszcz (mm)</th>
-							<th className='px-6 py-2 border-b'>Deszcz ze śniegiem (mm)</th>
-							<th className='px-6 py-2 border-b'>Śnieg (mm)</th>
-							<th className='px-6 py-2 border-b'>Czas opadów (godz.)</th>
-							<th className='px-6 py-2 border-b'>Wschód słońca</th>
-							<th className='px-6 py-2 border-b'>Zachód słońca</th>
-							<th className='px-6 py-2 border-b'>Czas nasłonecznienia (godz.)</th>
-							<th className='px-6 py-2 border-b'>Ilość światła dziennego (godz.)</th>
-							<th className='px-6 py-2 border-b'>Prędkość wiatru (km/h)</th>
-							<th className='px-6 py-2 border-b'>Porywy wiatru (km/h)</th>
-							<th className='px-6 py-2 border-b'>Dominujący kierunek wiatru (°)</th>
-							<th className='px-6 py-2 border-b'>Suma promieniowania słonecznego (MJ/m²)</th>
-							<th className='px-6 py-2 border-b'>Ewapotranspiracja (mm)</th>
-							<th className='px-6 py-2 border-b'>Kod pogody</th>
+			<div className='w-[270px] sm:w-[420px] md:w-[630px] lg:w-[820px] xl:w-[1050px] overflow-x-auto shadow-md rounded-sm'>
+				<table className='bg-gray-900 text-sm text-left text-white'>
+					<thead className='text-white text-center'>
+						<tr className='bg-gray-800 '>
+							<th className='px-4 py-2 border-t border-l border-gray-500'>L.P.</th>
+							<th className='px-4 py-2 border-t border-l border-gray-500'>Data</th>
+							<th className='px-4 py-2 border-t border-l border-gray-500'>Maksymalna temperatura (°C)</th>
+							<th className='px-4 py-2 border-t border-l border-gray-500'>Minimalna temperatura (°C)</th>
+							<th className='px-4 py-2 border-t border-l border-gray-500'>Maksymalna odczuwalna temperatura (°C)</th>
+							<th className='px-4 py-2 border-t border-l border-gray-500'>Minimalna odczuwalna temperatura (°C)</th>
+							<th className='px-4 py-2 border-t border-l border-gray-500'>Całkowite opady (mm)</th>
+							<th className='px-4 py-2 border-t border-l border-gray-500'>Deszcz (mm)</th>
+							<th className='px-4 py-2 border-t border-l border-gray-500'>Deszcz ze śniegiem (mm)</th>
+							<th className='px-4 py-2 border-t border-l border-gray-500'>Śnieg (mm)</th>
+							<th className='px-4 py-2 border-t border-l border-gray-500'>Czas opadów (godz.)</th>
+							<th className='px-4 py-2 border-t border-l border-gray-500'>Wschód słońca</th>
+							<th className='px-4 py-2 border-t border-l border-gray-500'>Zachód słońca</th>
+							<th className='px-4 py-2 border-t border-l border-gray-500'>Czas nasłonecznienia (godz.)</th>
+							<th className='px-4 py-2 border-t border-l border-gray-500'>Ilość światła dziennego (godz.)</th>
+							<th className='px-4 py-2 border-t border-l border-gray-500'>Prędkość wiatru (km/h)</th>
+							<th className='px-4 py-2 border-t border-l border-gray-500'>Porywy wiatru (km/h)</th>
+							<th className='px-4 py-2 border-t border-l border-gray-500'>Dominujący kierunek wiatru (°)</th>
+							<th className='px-4 py-2 border-t border-l border-gray-500'>Suma promieniowania słonecznego (MJ/m²)</th>
+							<th className='px-4 py-2 border-t border-l border-gray-500'>Ewapotranspiracja (mm)</th>
+							<th className='px-4 py-2 border-t border-l border-r border-gray-500'>Kod pogody</th>
 						</tr>
 					</thead>
 					<tbody>
 						{paginatedData.map((data, index) => (
-							<tr key={data.id} className='odd:bg-gray-200 even:bg-gray-300 text-center'>
-								<td className='px-6 py-2 border-b'>{startIndex + index + 1}</td>
-								<td className='px-6 py-2 border-b'>
+							<tr key={data.id} className='text-center border-t border-b border-gray-500'>
+								<td className='px-4 py-2 border-l border-gray-500'>{startIndex + index + 1}</td>
+								<td className='px-6 py-2 border-b border-gray-500'>
 									{new Date(data.date).toLocaleDateString('pl-PL', {
 										day: '2-digit',
 										month: '2-digit',
 										year: 'numeric',
 									})}
 								</td>
-								<td className='px-6 py-2 border-b'>{data.maxTemperature}</td>
-								<td className='px-6 py-2 border-b'>{data.minTemperature}</td>
-								<td className='px-6 py-2 border-b'>{data.maxFeelTemperature}</td>
-								<td className='px-6 py-2 border-b'>{data.minFeelTemperature}</td>
-								<td className='px-6 py-2 border-b'>{data.totalPrecipitation}</td>
-								<td className='px-6 py-2 border-b'>{data.rain}</td>
-								<td className='px-6 py-2 border-b'>{data.rainSnow}</td>
-								<td className='px-6 py-2 border-b'>{data.snow}</td>
-								<td className='px-6 py-2 border-b'>{data.precipitationDuration}</td>
-								<td className='px-6 py-2 border-b'>{adjustSunTimeForDST(data.sunrise)}</td>
-								<td className='px-6 py-2 border-b'>{adjustSunTimeForDST(data.sunset)}</td>
-								<td className='px-6 py-2 border-b'>{(data.sunlightDuration / 3600).toFixed(2)}</td>
-								<td className='px-6 py-2 border-b'>{(data.daylightDuration / 3600).toFixed(2)}</td>
+								<td className='px-4 py-2 border-b border-gray-500'>{data.maxTemperature}</td>
+								<td className='px-4 py-2 border-b border-gray-500'>{data.minTemperature}</td>
+								<td className='px-4 py-2 border-b border-gray-500'>{data.maxFeelTemperature}</td>
+								<td className='px-4 py-2 border-b border-gray-500'>{data.minFeelTemperature}</td>
+								<td className='px-4 py-2 border-b border-gray-500'>{data.totalPrecipitation}</td>
+								<td className='px-4 py-2 border-b border-gray-500'>{data.rain}</td>
+								<td className='px-4 py-2 border-b border-gray-500'>{data.rainSnow}</td>
+								<td className='px-4 py-2 border-b border-gray-500'>{data.snow}</td>
+								<td className='px-4 py-2 border-b border-gray-500'>{data.precipitationDuration}</td>
+								<td className='px-4 py-2 border-b border-gray-500'>{adjustSunTimeForDST(data.sunrise)}</td>
+								<td className='px-4 py-2 border-b'>{adjustSunTimeForDST(data.sunset)}</td>
+								<td className='px-4 py-2 border-b border-gray-500'>{(data.sunlightDuration / 3600).toFixed(2)}</td>
+								<td className='px-4 py-2 border-b border-gray-500'>{(data.daylightDuration / 3600).toFixed(2)}</td>
 
-								<td className='px-6 py-2 border-b'>{data.maxWindSpeed}</td>
-								<td className='px-6 py-2 border-b'>{data.windGusts}</td>
-								<td className='px-6 py-2 border-b'>{data.dominantWindDirection}</td>
-								<td className='px-6 py-2 border-b'>{data.totalSolarRadiation}</td>
-								<td className='px-6 py-2 border-b'>{data.evapotranspiration}</td>
-								<td className='px-6 py-2 border-b'>{data.weatherCode}</td>
+								<td className='px-4 py-2 border-b border-gray-500'>{data.maxWindSpeed}</td>
+								<td className='px-4 py-2 border-b border-gray-500'>{data.windGusts}</td>
+								<td className='px-4 py-2 border-b border-gray-500'>{data.dominantWindDirection}</td>
+								<td className='px-4 py-2 border-b border-gray-500'>{data.totalSolarRadiation}</td>
+								<td className='px-4 py-2 border-b border-gray-500'>{data.evapotranspiration}</td>
+								<td className='px-4 py-2 border-r border-gray-500'>{data.weatherCode}</td>
 							</tr>
 						))}
 					</tbody>

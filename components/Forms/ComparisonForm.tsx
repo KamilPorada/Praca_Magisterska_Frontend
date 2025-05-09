@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Button from '../UI/Button'
 
 type City = {
@@ -15,6 +15,8 @@ const MIN_DATE = '1950-01-01'
 const MAX_DATE = '2024-12-31'
 
 const ComparisonForm: React.FC<ComparisonFormProps> = ({ cities, onSubmit }) => {
+	const [cityName1, setCityName1] = useState<string>('')
+	const [cityName2, setCityName2] = useState<string>('')
 	const [city1, setCity1] = useState<number | undefined>(cities[0]?.id)
 	const [city2, setCity2] = useState<number | undefined>(cities[1]?.id)
 	const [date, setDate] = useState('')
@@ -56,6 +58,25 @@ const ComparisonForm: React.FC<ComparisonFormProps> = ({ cities, onSubmit }) => 
 			date,
 		})
 	}
+
+	useEffect(() => {
+		if (cities.length > 0) {
+			setCity1(cities[0].id)
+			setCityName1(cities[0].name)
+			setCity2(cities[1].id)
+			setCityName2(cities[1].name)
+		}
+	}, [cities])
+
+	useEffect(() => {
+		const city = cities.find(city => city.id === city1)
+		if (city) {
+			setCity1(cities[0].id)
+			setCityName1(cities[0].name)
+			setCity2(cities[1].id)
+			setCityName2(cities[1].name)
+		}
+	}, [ cities])
 
 	return (
 		<form onSubmit={handleSubmit} className='w-full'>

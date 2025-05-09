@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Button from '../UI/Button'
 
 type City = {
@@ -12,6 +12,7 @@ type ClimatePredictionFormProps = {
 }
 
 const ClimatePredictionForm: React.FC<ClimatePredictionFormProps> = ({ cities, onSubmit }) => {
+	const [cityName, setCityName] = useState<string>('')
 	const [selectedCity, setSelectedCity] = useState<number | undefined>(cities[0]?.id)
 	const [errors, setErrors] = useState<{ city?: boolean }>({})
 
@@ -33,6 +34,20 @@ const ClimatePredictionForm: React.FC<ClimatePredictionFormProps> = ({ cities, o
 
 		onSubmit({ cityId: selectedCity! })
 	}
+
+	useEffect(() => {
+		if (cities.length > 0) {
+			setSelectedCity(cities[0].id)
+			setCityName(cities[0].name)
+		}
+	}, [cities])
+
+	useEffect(() => {
+		const city = cities.find(city => city.id === selectedCity)
+		if (city) {
+			setCityName(city.name)
+		}
+	}, [selectedCity, cities])
 
 	return (
 		<form onSubmit={handleSubmit} className='w-full'>

@@ -136,45 +136,67 @@ const SearchData: React.FC = () => {
 	}
 
 	const handleExportToCSV = () => {
-    let csvContent = 'data:text/csv;charset=utf-8,';
+		let csvContent = 'data:text/csv;charset=utf-8,'
 
-    // Wybór nagłówków w zależności od zakresu (dni, miesiące, lata)
-    if (selectedOption === 'days') {
-        // Nagłówki dla danych dziennych
-        csvContent += 'L.P.,Data,Maksymalna temperatura (°C),Minimalna temperatura (°C),Maksymalna odczuwalna temperatura (°C),Minimalna odczuwalna temperatura (°C),Całkowite opady (mm),Deszcz (mm),Deszcz ze śniegiem (mm),Śnieg (mm),Czas opadów (godz.),Wschód słońca,Zachód słońca,Czas nasłonecznienia (godz.),Ilość światła dziennego (godz.),Prędkość wiatru (km/h),Porywy wiatru (km/h),Dominujący kierunek wiatru (°),Suma promieniowania słonecznego (MJ/m²),Ewapotranspiracja (mm),Kod pogody\n';
+		// Wybór nagłówków w zależności od zakresu (dni, miesiące, lata)
+		if (selectedOption === 'days') {
+			// Nagłówki dla danych dziennych
+			csvContent +=
+				'L.P.,Data,Maksymalna temperatura (°C),Minimalna temperatura (°C),Maksymalna odczuwalna temperatura (°C),Minimalna odczuwalna temperatura (°C),Całkowite opady (mm),Deszcz (mm),Deszcz ze śniegiem (mm),Śnieg (mm),Czas opadów (godz.),Wschód słońca,Zachód słońca,Czas nasłonecznienia (godz.),Ilość światła dziennego (godz.),Prędkość wiatru (km/h),Porywy wiatru (km/h),Dominujący kierunek wiatru (°),Suma promieniowania słonecznego (MJ/m²),Ewapotranspiracja (mm),Kod pogody\n'
 
-        dailyData.forEach((data, index) => {
-            const row = `${index + 1},${data.date},${data.maxTemperature},${data.minTemperature},${data.maxFeelTemperature},${data.minFeelTemperature},${data.totalPrecipitation},${data.rain},${data.rainSnow},${data.snow},${data.precipitationDuration},${data.sunrise},${data.sunset},${data.sunlightDuration},${data.daylightDuration},${data.maxWindSpeed},${data.windGusts},${data.dominantWindDirection},${data.totalSolarRadiation},${data.evapotranspiration},${data.weatherCode}\n`;
-            csvContent += row;
-        });
+			dailyData.forEach((data, index) => {
+				const row = `${index + 1},${data.date},${data.maxTemperature},${data.minTemperature},${
+					data.maxFeelTemperature
+				},${data.minFeelTemperature},${data.totalPrecipitation},${data.rain},${data.rainSnow},${data.snow},${
+					data.precipitationDuration
+				},${data.sunrise},${data.sunset},${data.sunlightDuration},${data.daylightDuration},${data.maxWindSpeed},${
+					data.windGusts
+				},${data.dominantWindDirection},${data.totalSolarRadiation},${data.evapotranspiration},${data.weatherCode}\n`
+				csvContent += row
+			})
+		} else if (selectedOption === 'months') {
+			// Nagłówki dla danych miesięcznych
+			csvContent +=
+				'L.P.,Rok,Miesiąc,Średnia maksymalna temperatura (°C),Średnia minimalna temperatura (°C),Średnia maksymalna odczuwalna temperatura (°C),Średnia minimalna odczuwalna temperatura (°C),Średnie nasłonecznienie dzienne (godz.),Średnia ilość światła dziennego (godz.),Średnia prędkość wiatru (km/h),Średnie porywy wiatru (km/h),Suma opadów (mm),Suma opadów deszczu (mm),Suma opadów śniegu (mm),Sumaryczny czas opadów (godz.),Suma promieniowania słonecznego (MJ/m²),Sumaryczna ewapotranspiracja (mm),Dominujący kierunek wiatru (°),Dominujący kod pogody\n'
 
-    } else if (selectedOption === 'months') {
-        // Nagłówki dla danych miesięcznych
-        csvContent += 'L.P.,Rok,Miesiąc,Średnia maksymalna temperatura (°C),Średnia minimalna temperatura (°C),Średnia maksymalna odczuwalna temperatura (°C),Średnia minimalna odczuwalna temperatura (°C),Średnie nasłonecznienie dzienne (godz.),Średnia ilość światła dziennego (godz.),Średnia prędkość wiatru (km/h),Średnie porywy wiatru (km/h),Suma opadów (mm),Suma opadów deszczu (mm),Suma opadów śniegu (mm),Sumaryczny czas opadów (godz.),Suma promieniowania słonecznego (MJ/m²),Sumaryczna ewapotranspiracja (mm),Dominujący kierunek wiatru (°),Dominujący kod pogody\n';
+			monthlyData.forEach((data, index) => {
+				const row = `${index + 1},${data.year},${data.month},${data.maxTemperature},${data.minTemperature},${
+					data.maxFeelsLikeTemperature
+				},${data.minFeelsLikeTemperature},${data.dailySunshine},${data.dailyLightHours},${data.maxWindSpeed},${
+					data.windGusts
+				},${data.totalPrecipitation},${data.rain},${data.snow},${data.precipitationTime},${data.totalSolarRadiation},${
+					data.evapotranspiration
+				},${data.dominantWindDirection},${data.weatherCode}\n`
+				csvContent += row
+			})
+		} else if (selectedOption === 'years') {
+			// Nagłówki dla danych rocznych
+			csvContent +=
+				'L.P.,Rok,Średnia maksymalna temperatura (°C),Średnia minimalna temperatura (°C),Średnia maksymalna odczuwalna temperatura (°C),Średnia minimalna odczuwalna temperatura (°C),Średnia prędkość wiatru (km/h),Średnie porywy wiatru (km/h),Suma opadów (mm),Suma opadów deszczu (mm),Suma opadów śniegu (mm),Sumaryczny czas opadów (godz.),Dominujący kierunek wiatru (°)\n'
 
-        monthlyData.forEach((data, index) => {
-            const row = `${index + 1},${data.year},${data.month},${data.maxTemperature},${data.minTemperature},${data.maxFeelsLikeTemperature},${data.minFeelsLikeTemperature},${data.dailySunshine},${data.dailyLightHours},${data.maxWindSpeed},${data.windGusts},${data.totalPrecipitation},${data.rain},${data.snow},${data.precipitationTime},${data.totalSolarRadiation},${data.evapotranspiration},${data.dominantWindDirection},${data.weatherCode}\n`;
-            csvContent += row;
-        });
+			yearlyData.forEach((data, index) => {
+				const row = `${index + 1},${data.year},${data.maxTemperature},${data.minTemperature},${
+					data.maxFeelsLikeTemperature
+				},${data.minFeelsLikeTemperature},${data.maxWindSpeed},${data.windGusts},${data.totalPrecipitation},${
+					data.rain
+				},${data.snow},${data.precipitationTime},${data.dominantWindDirection}\n`
+				csvContent += row
+			})
+		}
 
-    } else if (selectedOption === 'years') {
-        // Nagłówki dla danych rocznych
-        csvContent += 'L.P.,Rok,Średnia maksymalna temperatura (°C),Średnia minimalna temperatura (°C),Średnia maksymalna odczuwalna temperatura (°C),Średnia minimalna odczuwalna temperatura (°C),Średnia prędkość wiatru (km/h),Średnie porywy wiatru (km/h),Suma opadów (mm),Suma opadów deszczu (mm),Suma opadów śniegu (mm),Sumaryczny czas opadów (godz.),Dominujący kierunek wiatru (°)\n';
+		const now = new Date()
+			const date = now.toISOString().split('T')[0] // YYYY-MM-DD
+			const hours = String(now.getHours()).padStart(2, '0')
+			const minutes = String(now.getMinutes()).padStart(2, '0')
+			const seconds = String(now.getSeconds()).padStart(2, '0')
+			const time = `${hours}-${minutes}-${seconds}`
 
-        yearlyData.forEach((data, index) => {
-            const row = `${index + 1},${data.year},${data.maxTemperature},${data.minTemperature},${data.maxFeelsLikeTemperature},${data.minFeelsLikeTemperature},${data.maxWindSpeed},${data.windGusts},${data.totalPrecipitation},${data.rain},${data.snow},${data.precipitationTime},${data.dominantWindDirection}\n`;
-            csvContent += row;
-        });
-    }
-
-    // Tworzymy link do pobrania pliku CSV
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', 'dane_meteorologiczne.csv');
-    link.click();
-}
-
+		const encodedUri = encodeURI(csvContent)
+		const link = document.createElement('a')
+		link.setAttribute('href', encodedUri)
+		link.setAttribute('download', `Dane meteorologiczne - ${date} ${time}.csv`)
+		link.click()
+	}
 
 	const renderForm = () => {
 		switch (selectedOption) {

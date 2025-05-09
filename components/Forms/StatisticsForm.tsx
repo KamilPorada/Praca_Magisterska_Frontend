@@ -19,7 +19,7 @@ const DailyWeatherDataForm: React.FC<DailyWeatherDataFormProps> = ({ cities, onD
 	const [endDate, setEndDate] = useState<string>('')
 	const [errors, setErrors] = useState<{ city?: boolean; startDate?: string; endDate?: string }>({})
 
-	const MIN_DATE = '1950-01-01'
+	const MIN_DATE = '1940-01-01'
 	const MAX_DATE = '2024-12-31'
 
 	const validateForm = () => {
