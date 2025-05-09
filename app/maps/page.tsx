@@ -5,6 +5,9 @@ import PlatformSectionTitle from '@/components/UI/PlatformSectionTitle'
 import MapsForm from '@/components/Forms/MapsForm'
 import { useSidebar } from '@/components/contexts/SidebarProvider'
 import PolandWeatherMap from '../../components/Maps/PolandWeatherMap' // Importujemy komponent mapy
+import jsPDF from 'jspdf'
+import html2canvas from 'html2canvas'
+import Button from '@/components/UI/Button'
 
 type WeatherData = {
 	id: number
@@ -33,18 +36,18 @@ type WeatherData = {
 }
 
 type City = {
-    id: number
-    name: string
-    voivodeship_id: number
-    population: number
-    area: number
-    population_density: number
-    longitude: number
-    latitude: number
-  }
+	id: number
+	name: string
+	voivodeship_id: number
+	population: number
+	area: number
+	population_density: number
+	longitude: number
+	latitude: number
+}
 
 const WeatherMap = () => {
-    const [cities, setCities] = useState<City[]>([])
+	const [cities, setCities] = useState<City[]>([])
 	const [selectedDate, setSelectedDate] = useState<string | null>(null)
 	const [isFormSubmitted, setIsFormSubmitted] = useState(false)
 	const [weatherData, setWeatherData] = useState<WeatherData[] | null>(null)
@@ -74,28 +77,74 @@ const WeatherMap = () => {
 			setTimeout(() => {
 				resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 				setTimeout(() => {
-					window.scrollBy({ top: 150, left: 0, behavior: 'smooth' })
+					window.scrollBy({ top: 160, left: 0, behavior: 'smooth' })
 				}, 300)
 			}, 300)
 		}
 	}
 
-    useEffect(() => {
-        const fetchCities = async () => {
-          try {
-            const response = await fetch('http://localhost:8080/api/cities')
-            const data = await response.json()
-    
-            const sortedData = data.sort((a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name))
-    
-            setCities(sortedData)
-          } catch (error) {
-            console.error('Error fetching cities:', error)
-          }
-        }
-    
-        fetchCities()
-      }, [])
+	const handleExportToPDF = async () => {
+		if (resultsRef.current) {
+			const canvas = await html2canvas(resultsRef.current as HTMLElement, {
+				useCORS: true,
+				scrollY: -window.scrollY,
+			})
+			const imgData = canvas.toDataURL('image/png')
+			const pdf = new jsPDF('p', 'mm', 'a4')
+
+			const imgProps = pdf.getImageProperties(imgData)
+			const pdfWidth = pdf.internal.pageSize.getWidth()
+
+			// Obliczamy wysokość na podstawie proporcji obrazu
+			const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width
+
+			// Sprawdzamy, czy obraz nie jest za wysoki (ponad jedną stronę A4)
+			const maxHeight = pdf.internal.pageSize.getHeight()
+			if (pdfHeight > maxHeight) {
+				// Jeśli obraz jest za wysoki, podzielimy go na kolejne strony
+				const pages = Math.ceil(pdfHeight / maxHeight)
+				for (let i = 0; i < pages; i++) {
+					const yOffset = -maxHeight * i
+					if (i > 0) pdf.addPage()
+					pdf.addImage(imgData, 'PNG', 0, yOffset, pdfWidth, pdfHeight)
+				}
+			} else {
+				// Jeśli obraz mieści się na jednej stronie
+				pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight)
+			}
+
+			// Data i czas
+			const now = new Date()
+			const date = now.toISOString().split('T')[0] // YYYY-MM-DD
+			const hours = String(now.getHours()).padStart(2, '0')
+			const minutes = String(now.getMinutes()).padStart(2, '0')
+			const seconds = String(now.getSeconds()).padStart(2, '0')
+			const time = `${hours}-${minutes}-${seconds}`
+
+			const fileName = `Wizualizacja danych na mapie - ${date} ${time}.pdf`
+
+			pdf.save(fileName)
+		} else {
+			console.error('Nie znaleziono elementu do eksportu!')
+		}
+	}
+
+	useEffect(() => {
+		const fetchCities = async () => {
+			try {
+				const response = await fetch('http://localhost:8080/api/cities')
+				const data = await response.json()
+
+				const sortedData = data.sort((a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name))
+
+				setCities(sortedData)
+			} catch (error) {
+				console.error('Error fetching cities:', error)
+			}
+		}
+
+		fetchCities()
+	}, [])
 
 	return (
 		<section className={sidebarContainer}>
@@ -115,13 +164,16 @@ const WeatherMap = () => {
 
 					{isFormSubmitted && selectedDate && weatherData && (
 						<div className='text-white text-center'>
-						
-
 							{/* Dodajemy mapę z danymi */}
 							<PolandWeatherMap data={weatherData} cities={cities} />
 						</div>
 					)}
 				</div>
+				{isFormSubmitted && selectedDate && weatherData && (
+					<div className='flex justify-center mt-4'>
+						<Button onClick={handleExportToPDF}>Eksport do PDF</Button>
+					</div>
+				)}
 			</div>
 		</section>
 	)

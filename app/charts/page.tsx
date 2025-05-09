@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useSidebar } from '../../components/contexts/SidebarProvider'
 import PlatformSectionTitle from '@/components/UI/PlatformSectionTitle'
 
@@ -21,6 +21,10 @@ import DayNightDurationChart from '@/components/Charts/DayNightDurationChart'
 import SunriseSunsetTimeChart from '@/components/Charts/SunriseSunsetTimeChart'
 import EvapotranspirationChart from '@/components/Charts/EvapotranspirationChart'
 import SolarChart from '@/components/Charts/SolarChart'
+
+import jsPDF from 'jspdf'
+import html2canvas from 'html2canvas'
+import Button from '@/components/UI/Button'
 
 type City = {
 	id: number
@@ -97,6 +101,7 @@ const Charts = () => {
 	const [yearlyData, setYearlyData] = useState<YearlyWeatherData[]>([])
 	const [isFormSubmitted, setIsFormSubmitted] = useState(false)
 	const { sidebarContainer } = useSidebar()
+	const resultsRef = useRef<HTMLDivElement | null>(null)
 
 	useEffect(() => {
 		const fetchCities = async () => {
@@ -128,7 +133,14 @@ const Charts = () => {
 		} else if (selectedOption === 'years') {
 			setYearlyData(data)
 		}
-		setIsFormSubmitted(true) // Ustawiamy formularz jako wysłany, aby renderować tabelę
+		setIsFormSubmitted(true)
+
+		setTimeout(() => {
+			resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+			setTimeout(() => {
+				window.scrollBy({ top: 420, left: 0, behavior: 'smooth' })
+			}, 300)
+		}, 300)
 	}
 
 	const renderForm = () => {
@@ -141,6 +153,52 @@ const Charts = () => {
 				return <YearlyWeatherDataForm cities={cities} onDataFetched={handleDataFetched} />
 			default:
 				return null
+		}
+	}
+
+	const handleExportToPDF = async () => {
+		if (resultsRef.current) {
+			const canvas = await html2canvas(resultsRef.current as HTMLElement, {
+				useCORS: true,
+				scrollY: -window.scrollY,
+			})
+			const imgData = canvas.toDataURL('image/png')
+			const pdf = new jsPDF('p', 'mm', 'a4')
+
+			const imgProps = pdf.getImageProperties(imgData)
+			const pdfWidth = pdf.internal.pageSize.getWidth()
+
+			// Obliczamy wysokość na podstawie proporcji obrazu
+			const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width
+
+			// Sprawdzamy, czy obraz nie jest za wysoki (ponad jedną stronę A4)
+			const maxHeight = pdf.internal.pageSize.getHeight()
+			if (pdfHeight > maxHeight) {
+				// Jeśli obraz jest za wysoki, podzielimy go na kolejne strony
+				const pages = Math.ceil(pdfHeight / maxHeight)
+				for (let i = 0; i < pages; i++) {
+					const yOffset = -maxHeight * i
+					if (i > 0) pdf.addPage()
+					pdf.addImage(imgData, 'PNG', 0, yOffset, pdfWidth, pdfHeight)
+				}
+			} else {
+				// Jeśli obraz mieści się na jednej stronie
+				pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight)
+			}
+
+			// Data i czas
+			const now = new Date()
+			const date = now.toISOString().split('T')[0] // YYYY-MM-DD
+			const hours = String(now.getHours()).padStart(2, '0')
+			const minutes = String(now.getMinutes()).padStart(2, '0')
+			const seconds = String(now.getSeconds()).padStart(2, '0')
+			const time = `${hours}-${minutes}-${seconds}`
+
+			const fileName = `Wizualizacja danych na wykresach - ${date} ${time}.pdf`
+
+			pdf.save(fileName)
+		} else {
+			console.error('Nie znaleziono elementu do eksportu!')
 		}
 	}
 	return (
@@ -211,7 +269,7 @@ const Charts = () => {
 					{renderForm()}
 				</div>
 				{isFormSubmitted && (
-					<div className='w-full mt-10 flex flex-wrap flex-row justify-between items-center gap-6'>
+					<div ref={resultsRef} className='w-full mt-10 flex flex-wrap flex-row justify-between items-center gap-6'>
 						<TemperatureChart
 							data={selectedOption === 'days' ? dailyData : selectedOption === 'months' ? monthlyData : yearlyData}
 						/>
@@ -246,6 +304,11 @@ const Charts = () => {
 						{(selectedOption === 'days' || selectedOption === 'months') && (
 							<SolarChart data={selectedOption === 'days' ? dailyData : monthlyData} />
 						)}
+					</div>
+				)}
+				{isFormSubmitted && (
+					<div className='flex justify-center mt-6'>
+						<Button onClick={handleExportToPDF}>Eksport do PDF</Button>
 					</div>
 				)}
 			</div>

@@ -138,7 +138,7 @@ const SunCycleCard = () => {
 					</>
 				)}
 			</div>
-			<h3 className='text-xs text-center'>{timeRemainingText}</h3>
+			<h3 className='text-center'>{timeRemainingText}</h3>
 		</div>
 	)
 }

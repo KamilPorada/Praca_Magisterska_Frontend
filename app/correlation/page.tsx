@@ -7,6 +7,9 @@ import { useSidebar } from '@/components/contexts/SidebarProvider'
 import CorrelationChart from '@/components/Charts/CorrelationChart'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLink } from '@fortawesome/free-solid-svg-icons'
+import jsPDF from 'jspdf'
+import html2canvas from 'html2canvas'
+import Button from '@/components/UI/Button'
 
 type City = {
 	id: number
@@ -113,13 +116,59 @@ const CorrelationPage = () => {
 			setTimeout(() => {
 				resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 				setTimeout(() => {
-					window.scrollBy({ top: 150, left: 0, behavior: 'smooth' })
+					window.scrollBy({ top: 400, left: 0, behavior: 'smooth' })
 				}, 300)
 			}, 300)
 		} catch (error) {
 			console.error('Błąd pobierania danych korelacji:', error)
 		} finally {
 			setLoading(false)
+		}
+	}
+
+	const handleExportToPDF = async () => {
+		if (resultRef.current) {
+			const canvas = await html2canvas(resultRef.current as HTMLElement, {
+				useCORS: true,
+				scrollY: -window.scrollY,
+			})
+			const imgData = canvas.toDataURL('image/png')
+			const pdf = new jsPDF('p', 'mm', 'a4')
+
+			const imgProps = pdf.getImageProperties(imgData)
+			const pdfWidth = pdf.internal.pageSize.getWidth()
+
+			// Obliczamy wysokość na podstawie proporcji obrazu
+			const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width
+
+			// Sprawdzamy, czy obraz nie jest za wysoki (ponad jedną stronę A4)
+			const maxHeight = pdf.internal.pageSize.getHeight()
+			if (pdfHeight > maxHeight) {
+				// Jeśli obraz jest za wysoki, podzielimy go na kolejne strony
+				const pages = Math.ceil(pdfHeight / maxHeight)
+				for (let i = 0; i < pages; i++) {
+					const yOffset = -maxHeight * i
+					if (i > 0) pdf.addPage()
+					pdf.addImage(imgData, 'PNG', 0, yOffset, pdfWidth, pdfHeight)
+				}
+			} else {
+				// Jeśli obraz mieści się na jednej stronie
+				pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight)
+			}
+
+			// Data i czas
+			const now = new Date()
+			const date = now.toISOString().split('T')[0] // YYYY-MM-DD
+			const hours = String(now.getHours()).padStart(2, '0')
+			const minutes = String(now.getMinutes()).padStart(2, '0')
+			const seconds = String(now.getSeconds()).padStart(2, '0')
+			const time = `${hours}-${minutes}-${seconds}`
+
+			const fileName = `Korelacja danych - ${date} ${time}.pdf`
+
+			pdf.save(fileName)
+		} else {
+			console.error('Nie znaleziono elementu do eksportu!')
 		}
 	}
 
@@ -243,6 +292,11 @@ const CorrelationPage = () => {
 				</div>
 
 				{renderCorrelationResult()}
+				{isFormSubmitted && (
+					<div className='flex justify-center'>
+						<Button onClick={handleExportToPDF}>Eksport do PDF</Button>
+					</div>
+				)}
 			</div>
 		</section>
 	)

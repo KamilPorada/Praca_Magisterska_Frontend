@@ -5,9 +5,11 @@ import PlatformSectionTitle from '@/components/UI/PlatformSectionTitle'
 import ComparisonForm from '@/components/Forms/ComparisonForm'
 import { useSidebar } from '@/components/contexts/SidebarProvider'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-	faCity,
-} from '@fortawesome/free-solid-svg-icons'
+import { faCity } from '@fortawesome/free-solid-svg-icons'
+
+import jsPDF from 'jspdf'
+import html2canvas from 'html2canvas'
+import Button from '@/components/UI/Button'
 
 type WeatherData = {
 	id: number
@@ -130,7 +132,7 @@ const ComparisonPage = () => {
 			setTimeout(() => {
 				resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 				setTimeout(() => {
-					window.scrollBy({ top: 150, left: 0, behavior: 'smooth' })
+					window.scrollBy({ top: 200, left: 0, behavior: 'smooth' })
 				}, 300)
 			}, 300)
 		} catch (error) {
@@ -140,15 +142,61 @@ const ComparisonPage = () => {
 		}
 	}
 
+	const handleExportToPDF = async () => {
+		if (resultRef.current) {
+			const canvas = await html2canvas(resultRef.current as HTMLElement, {
+				useCORS: true,
+				scrollY: -window.scrollY,
+			})
+			const imgData = canvas.toDataURL('image/png')
+			const pdf = new jsPDF('p', 'mm', 'a4')
+
+			const imgProps = pdf.getImageProperties(imgData)
+			const pdfWidth = pdf.internal.pageSize.getWidth()
+
+			// Obliczamy wysokość na podstawie proporcji obrazu
+			const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width
+
+			// Sprawdzamy, czy obraz nie jest za wysoki (ponad jedną stronę A4)
+			const maxHeight = pdf.internal.pageSize.getHeight()
+			if (pdfHeight > maxHeight) {
+				// Jeśli obraz jest za wysoki, podzielimy go na kolejne strony
+				const pages = Math.ceil(pdfHeight / maxHeight)
+				for (let i = 0; i < pages; i++) {
+					const yOffset = -maxHeight * i
+					if (i > 0) pdf.addPage()
+					pdf.addImage(imgData, 'PNG', 0, yOffset, pdfWidth, pdfHeight)
+				}
+			} else {
+				// Jeśli obraz mieści się na jednej stronie
+				pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight)
+			}
+
+			// Data i czas
+			const now = new Date()
+			const date = now.toISOString().split('T')[0] // YYYY-MM-DD
+			const hours = String(now.getHours()).padStart(2, '0')
+			const minutes = String(now.getMinutes()).padStart(2, '0')
+			const seconds = String(now.getSeconds()).padStart(2, '0')
+			const time = `${hours}-${minutes}-${seconds}`
+
+			const fileName = `Porównanie klimatu miast - ${date} ${time}.pdf`
+
+			pdf.save(fileName)
+		} else {
+			console.error('Nie znaleziono elementu do eksportu!')
+		}
+	}
+
 	const renderComparisonResult = () => {
 		if (!result || !result.comparison) {
 			return <div className='text-white mt-6'>Brak wyników porównania.</div>
 		}
 
 		function formatDate(dateString: string): string {
-			const date = new Date(dateString) 
+			const date = new Date(dateString)
 			const day = String(date.getDate()).padStart(2, '0')
-			const month = String(date.getMonth() + 1).padStart(2, '0') 
+			const month = String(date.getMonth() + 1).padStart(2, '0')
 			const year = date.getFullYear()
 
 			return `${day}.${month}.${year}`
@@ -163,7 +211,7 @@ const ComparisonPage = () => {
 
 		const isDaylightSavingTime = (date: Date) => {
 			const year = date.getFullYear()
-			const lastSundayMarch = new Date(year, 2, 31 - new Date(year, 2, 31).getDay()) 
+			const lastSundayMarch = new Date(year, 2, 31 - new Date(year, 2, 31).getDay())
 			const lastSundayOctober = new Date(year, 9, 31 - new Date(year, 9, 31).getDay())
 			return date >= lastSundayMarch && date <= lastSundayOctober
 		}
@@ -261,7 +309,7 @@ const ComparisonPage = () => {
 										? (() => {
 												const avg1 = (selectedCityWeather1.maxTemperature + selectedCityWeather1.minTemperature) / 2
 												const avg2 = (selectedCityWeather2.maxTemperature + selectedCityWeather2.minTemperature) / 2
-												const diff = Math.abs(+(avg1 - avg2).toFixed(1)) 
+												const diff = Math.abs(+(avg1 - avg2).toFixed(1))
 												const isNeutral = diff === 0
 
 												return (
@@ -602,7 +650,7 @@ const ComparisonPage = () => {
 											)
 										})()
 									) : (
-										<p className='text-xs lg:text-sm text-gray-400'>Brak danych</p> 
+										<p className='text-xs lg:text-sm text-gray-400'>Brak danych</p>
 									)}
 								</div>
 							</div>
@@ -684,7 +732,7 @@ const ComparisonPage = () => {
 							</div>
 						</div>
 						<div className='flex flex-col justify-center items-center p-2 lg:p-4 bg-slate-700 rounded-md ring-1 ring-gray-400 w-full'>
-						<p className='mb-2 font-thin uppercase text-sm'>Warunki pogodowe</p>
+							<p className='mb-2 font-thin uppercase text-sm'>Warunki pogodowe</p>
 
 							<div className='flex flex-row justify-between items-center border-b border-gray-400 w-full '>
 								<p className='text-[10px] lg:text-xs lg:font-thin'>Temperatura:</p>
@@ -1097,6 +1145,11 @@ const ComparisonPage = () => {
 
 				{loading && <p className='text-white mt-6'>Ładowanie wyników...</p>}
 				{isFormSubmitted && renderComparisonResult()}
+				{isFormSubmitted && (
+					<div className='flex justify-center mt-6'>
+						<Button onClick={handleExportToPDF}>Eksport do PDF</Button>
+					</div>
+				)}
 			</div>
 		</section>
 	)
